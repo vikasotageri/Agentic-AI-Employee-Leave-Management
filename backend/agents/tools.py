@@ -442,10 +442,11 @@ def cancel_leave(db: Session, leave_id: str, reason: str):
         return {"success": False, "error": "Cannot cancel leave older than 70 days"}
 
     if leave.status in ("pending", "rejected"):
-        # Cancel before approval or already rejected → completely remove from history
-        db.delete(leave)
+        # Cancel before approval or already rejected → mark as cancelled, keep history
+        leave.status = "cancelled"
+        leave.cancellation_reason = reason
         db.commit()
-        return {"success": True, "auto_cancelled": True}
+        return {"success": True, "cancelled": True}
 
     if leave.status == "cancellation_requested":
         # Employee withdrew cancellation request → revert to approved
@@ -490,8 +491,8 @@ def approve_cancellation(db: Session, leave_id: str):
     if not leave:
         return {"success": False, "error": "Leave not found"}
 
-    # Hard delete — removed from history, balance auto-restored by dynamic computation
-    db.delete(leave)
+    # Mark as cancelled — keeps history, balance auto-restored by dynamic computation
+    leave.status = "cancelled"
     db.commit()
     return {"success": True}
 
@@ -537,7 +538,8 @@ def auto_cancel_stale_pending(db: Session):
         LeaveRecord.applied_on < cutoff,
     ).all()
     for rec in stale:
-        db.delete(rec)
+        rec.status = "cancelled"
+        rec.cancellation_reason = "Auto-cancelled: no response from manager for 4+ days"
     if stale:
         db.commit()
 

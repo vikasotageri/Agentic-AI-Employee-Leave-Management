@@ -450,6 +450,7 @@ window.selectEmployee=async function(id){
             <option value="auto-approved">Auto-Approved</option>
             <option value="rejected">Rejected</option>
             <option value="cancellation_requested">Cancellation Pending</option>
+            <option value="cancelled">Cancelled</option>
           </select>
           <select id="hrLeaveMonthFilter" onchange="renderHrLeaveHistory()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-400 bg-white">
             <option value="">All Months</option>
@@ -540,6 +541,7 @@ window.selectEmployee=async function(id){
           else if (isApproved) { statLabel = 'Approved'; statColor = 'bg-green-100 text-green-700'; statIcon = '✅' }
           else if (isCancellationReq) { statLabel = 'Cancellation Pending'; statColor = 'bg-blue-100 text-blue-700'; statIcon = '🔶' }
           else if (isRejected) { statLabel = 'Rejected'; statColor = 'bg-red-100 text-red-700'; statIcon = '❌' }
+          else if (status === 'cancelled') { statLabel = 'Cancelled'; statColor = 'bg-gray-100 text-gray-500'; statIcon = '🗑️' }
           else { statLabel = status; statColor = 'bg-gray-100 text-gray-600'; statIcon = '📋' }
           const hasDoc = l.document || l.attachment
           const appliedOn = l.applied_on || ''
@@ -1097,6 +1099,9 @@ async function loadEmployeeDashboard() {
           } else if (isRejected) {
             statColor = 'bg-red-100 text-red-700'; statIcon = '❌'; statLabel = 'Rejected'
             actionHtml = '<span class="text-xs text-gray-400">--</span>'
+          } else if (status === 'cancelled') {
+            statColor = 'bg-gray-100 text-gray-500'; statIcon = '🗑️'; statLabel = 'Cancelled'
+            actionHtml = '<span class="text-xs text-gray-400">--</span>'
           } else {
             statColor = 'bg-gray-100 text-gray-600'; statIcon = '📋'; statLabel = status
             actionHtml = '<span class="text-xs text-gray-400">--</span>'
@@ -1314,6 +1319,11 @@ function renderLeaveHistory(leaves) {
       statColor = 'bg-red-100 text-red-700'
       statIcon = '❌'
       actionHtml = '<span class="text-xs text-gray-400">--</span>'
+    } else if (status === 'cancelled') {
+      statLabel = 'Cancelled'
+      statColor = 'bg-gray-100 text-gray-500'
+      statIcon = '🗑️'
+      actionHtml = '<span class="text-xs text-gray-400">--</span>'
     } else {
       statLabel = status
       statColor = 'bg-gray-100 text-gray-600'
@@ -1408,7 +1418,7 @@ window.cancelLeave = async function (leaveId) {
   const isPending = st === 'pending'
   const isCancellationReq = st === 'cancellation_requested'
   if (isPending) {
-    if (!confirm('Cancel this pending leave? It will be removed from history.')) return
+    if (!confirm('Cancel this pending leave?')) return
     try {
       await apiPost('/leaves/cancel', { leaveId, reason: 'Cancelled by employee' })
       loadEmployeeDashboard()
@@ -1967,8 +1977,8 @@ function renderEmpHistory(history) {
   html += '</select>'
   html += '<select id="empHistStatusFilter" onchange="applyEmpHistFilter()" class="px-2 py-1.5 border border-gray-300 rounded-lg text-xs outline-none">'
   html += '<option value="">All Status</option>'
-  ;['approved', 'rejected', 'pending', 'cancellation_requested'].forEach(s => {
-    const label = s === 'approved' ? 'Approved' : s === 'cancellation_requested' ? 'Cancellation Pending' : s.charAt(0).toUpperCase() + s.slice(1)
+  ;['approved', 'rejected', 'pending', 'cancellation_requested', 'cancelled'].forEach(s => {
+    const label = s === 'approved' ? 'Approved' : s === 'cancellation_requested' ? 'Cancellation Pending' : s === 'cancelled' ? 'Cancelled' : s.charAt(0).toUpperCase() + s.slice(1)
     html += '<option value="' + s + '" ' + (filters.status === s ? 'selected' : '') + '>' + label + '</option>'
   })
   html += '</select>'
@@ -2019,6 +2029,7 @@ function renderEmpHistory(history) {
       else if (s === 'rejected') { statLabel = 'Rejected'; statColor = 'bg-red-100 text-red-700'; statIcon = '❌' }
       else if (s === 'pending') { statLabel = 'Pending'; statColor = 'bg-yellow-100 text-yellow-700'; statIcon = '⏳' }
       else if (s === 'cancellation_requested') { statLabel = 'Cancellation Pending'; statColor = 'bg-blue-100 text-blue-700'; statIcon = '🔶' }
+      else if (s === 'cancelled') { statLabel = 'Cancelled'; statColor = 'bg-gray-100 text-gray-500'; statIcon = '🗑️' }
       else { statLabel = s; statColor = 'bg-gray-100 text-gray-600'; statIcon = '📋' }
       const ld = l.startDate || l.start_date || ''
       const ao = l.applied_on || ''
