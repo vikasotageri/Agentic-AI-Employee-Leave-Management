@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold text-gray-800 mb-6">📊 Employee Leave Dashboard</h1>
 
   <!-- Top Header: Employee Info + Calendar Icon -->
   <div id="empProfileHeader" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-6">
@@ -22,137 +23,138 @@
     </div>
   </div>
 
-  <!-- Content -->
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 mb-6 overflow-hidden p-6">
-      <!-- Leave Balance Cards -->
-      <h3 class="font-semibold text-gray-700 text-lg mb-4">📊 Leave Balance</h3>
-      <div id="leaveBalanceCards" class="grid grid-cols-5 gap-4 mb-6"></div>
+  <!-- Leave Balance -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+    <h3 class="font-semibold text-gray-700 text-lg mb-4">📊 Leave Balance</h3>
+    <div id="leaveBalanceCards" class="grid grid-cols-5 gap-4 mb-6"></div>
 
-      <!-- Leave Policy Quick Info -->
-      <details class="mb-6 bg-blue-50 rounded-2xl p-4 border border-blue-100">
-        <summary class="text-sm font-semibold text-blue-700 cursor-pointer">📋 Leave Policy Rules</summary>
-        <div class="mt-3 text-xs text-gray-600 space-y-2">
-          <p><b>Casual Leave (Max 24/year, 2/month from DOJ, carried forward):</b> First 2 requests/month auto-approved (max 2 days at a time). 3rd+ or >2 days → manager approval. No negative balance.</p>
-          <p><b>Sick Leave (Max 12/year, no carry forward):</b> First 1 request/month auto-approved (max 1 day at a time). 2nd+ or >1 day → manager. No negative balance.</p>
-          <p><b>Business Leave (Max 20/year, no carry forward):</b> Always manager approval. No auto-approval. No negative balance.</p>
-          <p><b>Emergency/Personal (Max 10/year, no carry forward):</b> First 1 request/month auto-approved (max 1 day at a time). 2nd+ or >1 day → manager. No negative balance.</p>
-          <p><b>Family/Vacation (Max 10/year, no carry forward):</b> Always manager approval. No auto-approval. No negative balance.</p>
-          <p><b>Unpaid Leave (No limit):</b> Apply only when all other leave types exhausted. Always manager approval. No balance required.</p>
-          <p><b>Project Tag:</b> If you have a project tag, ALL leaves need manager approval (no auto-approval).</p>
-          <p><b>Paid Leave:</b> When all leave types exhausted, applies as paid leave. Manager approval required.</p>
-        </div>
-      </details>
-
-      <!-- Upcoming & Past Leaves -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div>
-          <h3 class="font-semibold text-gray-700 text-lg mb-4">📅 Upcoming Leaves</h3>
-          <div id="upcomingLeaves" class="space-y-3 max-h-[340px] overflow-y-auto pr-1"></div>
-        </div>
-        <div>
-          <h3 class="font-semibold text-gray-700 text-lg mb-4">📋 Past Leaves</h3>
-          <div id="pastLeaves" class="space-y-3 max-h-[340px] overflow-y-auto pr-1"></div>
-        </div>
+    <!-- Leave Policy Quick Info -->
+    <details class="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+      <summary class="text-sm font-semibold text-blue-700 cursor-pointer">📋 Leave Policy Rules</summary>
+      <div class="mt-3 text-xs text-gray-600 space-y-2">
+        <p><b>Casual Leave (Max 24/year, 2/month from DOJ, carried forward):</b> First 2 requests/month auto-approved (max 2 days at a time). 3rd+ or >2 days → manager approval. No negative balance.</p>
+        <p><b>Sick Leave (Max 12/year, no carry forward):</b> First 1 request/month auto-approved (max 1 day at a time). 2nd+ or >1 day → manager. No negative balance.</p>
+        <p><b>Business Leave (Max 20/year, no carry forward):</b> Always manager approval. No auto-approval. No negative balance.</p>
+        <p><b>Emergency/Personal (Max 10/year, no carry forward):</b> First 1 request/month auto-approved (max 1 day at a time). 2nd+ or >1 day → manager. No negative balance.</p>
+        <p><b>Family/Vacation (Max 10/year, no carry forward):</b> Always manager approval. No auto-approval. No negative balance.</p>
+        <p><b>Unpaid Leave (No limit):</b> Apply only when all other leave types exhausted. Always manager approval. No balance required.</p>
+        <p><b>Project Tag:</b> If you have a project tag, ALL leaves need manager approval (no auto-approval).</p>
+        <p><b>Paid Leave:</b> When all leave types exhausted, applies as paid leave. Manager approval required.</p>
       </div>
+    </details>
+  </div>
 
-      <!-- Apply Leave Module (Weekly Calendar) -->
-      <div class="border-t border-gray-200 pt-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-semibold text-gray-700 text-lg">📝 Apply Leave</h3>
-          <div class="flex items-center gap-2">
-            <button onclick="weekCalPrev()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">◀ Prev</button>
-            <span id="weekCalRange" class="text-sm font-medium text-gray-700 min-w-[200px] text-center">—</span>
-            <button onclick="weekCalNext()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">Next ▶</button>
-          </div>
-        </div>
-        <div id="weekCalGrid" class="grid grid-cols-7 gap-2 mb-4"></div>
-        <!-- Summary -->
-        <div id="weekCalSummary" class="bg-gray-50 rounded-2xl p-4 mb-3 hidden">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-semibold text-gray-700">📋 Leave Summary</span>
-            <span class="text-sm font-bold text-blue-600">Total: <span id="weekCalTotalCount">0</span> leave day(s)</span>
-          </div>
-          <div id="weekCalSummaryList" class="text-sm text-gray-600 space-y-1"></div>
-        </div>
-        <!-- Controls -->
-        <div class="flex items-center gap-2 mb-3">
-          <button onclick="weekCalClear()" class="px-4 py-2 border border-red-300 text-red-600 rounded-xl text-sm font-medium hover:bg-red-50 transition">🗑️ Clear All</button>
-          <button onclick="weekCalSubmit()" id="weekCalApplyBtn" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl text-sm font-semibold shadow-md shadow-blue-200 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>Apply Leave</button>
-        </div>
-        <div id="weekCalLeaveOptions" class="space-y-2 hidden">
-          <textarea id="weekCalReason" rows="2" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="Reason (optional)"></textarea>
-          <input type="file" id="weekCalDocument" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:text-sm">
-        </div>
-        <div id="weekCalResult" class="text-sm hidden mt-2"></div>
+  <!-- Upcoming & Past Leaves -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <h3 class="font-semibold text-gray-700 text-lg mb-4">📅 Upcoming Leaves</h3>
+        <div id="upcomingLeaves" class="space-y-3 max-h-[340px] overflow-y-auto pr-1"></div>
       </div>
+      <div>
+        <h3 class="font-semibold text-gray-700 text-lg mb-4">📋 Past Leaves</h3>
+        <div id="pastLeaves" class="space-y-3 max-h-[340px] overflow-y-auto pr-1"></div>
+      </div>
+    </div>
+  </div>
 
-      <!-- Leave History -->
-      <div class="border-t border-gray-200 pt-6 mt-6">
-        <h3 class="font-semibold text-gray-700 text-lg mb-4">📝 Leave History</h3>
-        <div class="mb-4">
-          <div class="flex flex-wrap gap-2">
-            <div class="relative flex-1 min-w-[180px]">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-              <input type="text" id="leaveHistorySearch" placeholder="Search by Request ID or Date..." oninput="filterLeaveHistory()" class="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <select id="leaveTypeFilter" onchange="filterLeaveHistory()" class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">All Types</option>
-              <option value="casual">Casual</option>
-              <option value="sick">Sick</option>
-              <option value="business">Business</option>
-              <option value="emergency">Personal/Emergency</option>
-              <option value="family">Family/Vacation</option>
-              <option value="unpaid">Unpaid</option>
-            </select>
-            <select id="leaveStatusFilter" onchange="filterLeaveHistory()" class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">All Status</option>
-              <option value="approved">Approved</option>
-              <option value="pending">Pending</option>
-              <option value="cancellation_requested">Cancellation Pending</option>
-              <option value="rejected">Rejected</option>
-            </select>
-            <select id="leaveMonthFilter" onchange="filterLeaveHistory()" class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">All Months</option>
-              <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-              <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
-              <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
-              <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
-            </select>
-            <select id="leaveYearFilter" onchange="filterLeaveHistory()" class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">All Years</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-            </select>
-          </div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="bg-gray-50 border-b border-gray-200">
-                <th class="text-left px-4 py-3 font-semibold text-gray-600">Request ID</th>
-                <th class="text-left px-4 py-3 font-semibold text-gray-600">Applied On</th>
-                <th class="text-left px-4 py-3 font-semibold text-gray-600">Leave Type</th>
-                <th class="text-left px-4 py-3 font-semibold text-gray-600">Leave on</th>
-                <th class="text-left px-4 py-3 font-semibold text-gray-600">Reason</th>
-                <th class="text-left px-4 py-3 font-semibold text-gray-600">View</th>
-                <th class="text-left px-4 py-3 font-semibold text-gray-600">Status</th>
-                <th class="text-left px-4 py-3 font-semibold text-gray-600">Action</th>
-              </tr>
-            </thead>
-            <tbody id="leaveHistoryTable" class="text-xs"></tbody>
-          </table>
-          <div id="leaveHistoryEmpty" class="text-center py-8 text-gray-400 hidden">
-            <span class="text-4xl block mb-2">📋</span>
-            <p class="text-sm">No leave history found</p>
-          </div>
-          <div id="leavePagination" class="flex items-center justify-between mt-4 hidden">
-            <button onclick="leavePrevPage()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">◀ Back 10</button>
-            <span id="leavePageInfo" class="text-sm text-gray-500"></span>
-            <button onclick="leaveNextPage()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">Next 10 ▶</button>
-          </div>
-        </div>
+  <!-- Apply Leave Module -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-semibold text-gray-700 text-lg">📝 Apply Leave</h3>
+      <div class="flex items-center gap-2">
+        <button onclick="weekCalPrev()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">◀ Prev</button>
+        <span id="weekCalRange" class="text-sm font-medium text-gray-700 min-w-[200px] text-center">—</span>
+        <button onclick="weekCalNext()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">Next ▶</button>
       </div>
+    </div>
+    <div id="weekCalGrid" class="grid grid-cols-7 gap-2 mb-4"></div>
+    <!-- Summary -->
+    <div id="weekCalSummary" class="bg-gray-50 rounded-2xl p-4 mb-3 hidden">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-semibold text-gray-700">📋 Leave Summary</span>
+        <span class="text-sm font-bold text-blue-600">Total: <span id="weekCalTotalCount">0</span> leave day(s)</span>
+      </div>
+      <div id="weekCalSummaryList" class="text-sm text-gray-600 space-y-1"></div>
+    </div>
+    <!-- Controls -->
+    <div class="flex items-center gap-2 mb-3">
+      <button onclick="weekCalClear()" class="px-4 py-2 border border-red-300 text-red-600 rounded-xl text-sm font-medium hover:bg-red-50 transition">🗑️ Clear All</button>
+      <button onclick="weekCalSubmit()" id="weekCalApplyBtn" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl text-sm font-semibold shadow-md shadow-blue-200 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>Apply Leave</button>
+    </div>
+    <div id="weekCalLeaveOptions" class="space-y-2 hidden">
+      <textarea id="weekCalReason" rows="2" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="Reason (optional)"></textarea>
+      <input type="file" id="weekCalDocument" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:text-sm">
+    </div>
+    <div id="weekCalResult" class="text-sm hidden mt-2"></div>
+  </div>
+
+  <!-- Leave History -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+    <h3 class="font-semibold text-gray-700 text-lg mb-4">📝 Leave History</h3>
+    <div class="mb-4">
+      <div class="flex flex-wrap gap-2">
+        <div class="relative flex-1 min-w-[180px]">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+          <input type="text" id="leaveHistorySearch" placeholder="Search by Request ID or Date..." oninput="filterLeaveHistory()" class="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <select id="leaveTypeFilter" onchange="filterLeaveHistory()" class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">All Types</option>
+          <option value="casual">Casual</option>
+          <option value="sick">Sick</option>
+          <option value="business">Business</option>
+          <option value="emergency">Personal/Emergency</option>
+          <option value="family">Family/Vacation</option>
+          <option value="unpaid">Unpaid</option>
+        </select>
+        <select id="leaveStatusFilter" onchange="filterLeaveHistory()" class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">All Status</option>
+          <option value="approved">Approved</option>
+          <option value="pending">Pending</option>
+          <option value="cancellation_requested">Cancellation Pending</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <select id="leaveMonthFilter" onchange="filterLeaveHistory()" class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">All Months</option>
+          <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+          <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+          <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+          <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+        </select>
+        <select id="leaveYearFilter" onchange="filterLeaveHistory()" class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">All Years</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="text-left px-4 py-3 font-semibold text-gray-600">Request ID</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-600">Applied On</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-600">Leave Type</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-600">Leave on</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-600">Reason</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-600">View</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-600">Status</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-600">Action</th>
+          </tr>
+        </thead>
+        <tbody id="leaveHistoryTable" class="text-xs"></tbody>
+      </table>
+      <div id="leaveHistoryEmpty" class="text-center py-8 text-gray-400 hidden">
+        <span class="text-4xl block mb-2">📋</span>
+        <p class="text-sm">No leave history found</p>
+      </div>
+      <div id="leavePagination" class="flex items-center justify-between mt-4 hidden">
+        <button onclick="leavePrevPage()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">◀ Back 10</button>
+        <span id="leavePageInfo" class="text-sm text-gray-500"></span>
+        <button onclick="leaveNextPage()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">Next 10 ▶</button>
+      </div>
+    </div>
   </div>
 
 <!-- Calendar Modal -->

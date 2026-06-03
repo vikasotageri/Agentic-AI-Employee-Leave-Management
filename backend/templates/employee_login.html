@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="min-h-screen flex bg-gradient-to-br from-orange-900 via-amber-800 to-yellow-900">
-  <div class="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-12">
+<div class="min-h-screen flex relative bg-gradient-to-br from-orange-900 via-amber-800 to-yellow-900">
+  <div class="w-full flex items-center justify-center p-4 lg:p-12">
     <div class="w-full max-w-md">
       <!-- Login Form -->
       <div id="empLoginForm" class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-8 lg:p-10 border border-orange-300/30">
@@ -62,38 +62,15 @@
       </div>
     </div>
   </div>
-  <div class="hidden lg:flex w-1/2 items-center justify-center p-12">
-    <div class="max-w-lg text-center">
-      <div class="text-7xl mb-6">📋</div>
-      <h2 class="text-3xl font-bold text-white mb-3">Your Leaves, Your Way</h2>
-      <p class="text-orange-200/80 mb-10 text-lg">Apply, track, and manage your leave requests</p>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 border border-orange-300/20 hover:bg-white/15 transition text-left">
-          <span class="text-3xl">✈️</span>
-          <p class="text-white font-semibold mt-2">Apply Leave</p>
-          <p class="text-orange-200/70 text-sm mt-1">Casual, sick, business & more</p>
-        </div>
-        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 border border-orange-300/20 hover:bg-white/15 transition text-left">
-          <span class="text-3xl">📊</span>
-          <p class="text-white font-semibold mt-2">Leave Balance</p>
-          <p class="text-orange-200/70 text-sm mt-1">Real-time balance tracking</p>
-        </div>
-        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 border border-orange-300/20 hover:bg-white/15 transition text-left">
-          <span class="text-3xl">📅</span>
-          <p class="text-white font-semibold mt-2">Upcoming Leaves</p>
-          <p class="text-orange-200/70 text-sm mt-1">View your scheduled time off</p>
-        </div>
-        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 border border-orange-300/20 hover:bg-white/15 transition text-left">
-          <span class="text-3xl">🤖</span>
-          <p class="text-white font-semibold mt-2">AI Assistant</p>
-          <p class="text-orange-200/70 text-sm mt-1">Ask questions about policy</p>
-        </div>
-      </div>
+  <div class="absolute bottom-0 left-0 right-0 text-center pb-4">
+    <div class="inline-flex items-center gap-2 bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full">
+      <span class="w-6 h-6 bg-gradient-to-br from-orange-400 to-amber-500 rounded-lg flex items-center justify-center text-xs font-bold text-white">AI</span>
+      <span class="text-orange-200/60 text-xs">AI Solution Limited &mdash; Technology Company, Bangalore</span>
     </div>
   </div>
 </div>
 <script>
-document.title = "Employee Login - LeaveFlow";
+document.title = "Employee Login - AI Solution Ltd";
 window.showForgotPassword = function() {
   document.getElementById('empLoginForm').classList.add('hidden');
   document.getElementById('empForgotForm').classList.remove('hidden');

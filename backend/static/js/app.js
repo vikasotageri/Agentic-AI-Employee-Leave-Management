@@ -144,19 +144,22 @@ function initNavbar(){
   const nav=document.getElementById('navbar')
   const navLinks=document.getElementById('navLinks')
   const userDisplay=document.getElementById('userDisplay')
-  if(!u||!nav){document.title='Login - LeaveFlow';return}
+  if(!u||!nav){document.title='Login - AI Solution Ltd';return}
   nav.classList.remove('hidden')
   const links={
-    hr:[{href:'/hr',label:'👥 Employees'}],
-    manager:[],
-    employee:[{href:'/employee',label:'🏠 Dashboard'}]
+    hr:[],
+    manager:[]
   }
   if(navLinks){
     const roleLinks=links[u.role]||[]
     navLinks.innerHTML=roleLinks.map(l=>`<a href="${l.href}" class="hover:text-blue-600 ${window.location.pathname===l.href?'text-blue-600':''}">${l.label}</a>`).join('')
   }
-  if(userDisplay) userDisplay.textContent=u.name+' ('+u.id+')'
-  document.title=u.role.charAt(0).toUpperCase()+u.role.slice(1)+' - LeaveFlow'
+  if(userDisplay){
+    const seniorTitles={hr:'Senior HR',manager:'Senior Manager'}
+    const title=seniorTitles[u.role]
+    userDisplay.textContent=title?u.name+' - '+title:u.name
+  }
+  document.title=u.role.charAt(0).toUpperCase()+u.role.slice(1)+' - AI Solution Ltd'
   loadNotifications()
   if(u.role==='hr'&&window.location.pathname==='/hr') loadEmployeeList()
 }
@@ -441,39 +444,46 @@ window.selectEmployee=async function(id){
     const emp=await apiGet('/employees/'+id)
     const lb=emp.leaveBalance||{}
     profile.innerHTML=`
-      <div class="flex items-start justify-between mb-8">
-        <div class="flex items-center gap-4">
-          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-200">${(emp.name||'?')[0].toUpperCase()}</div>
-          <div>
-            <h2 class="text-2xl font-bold text-gray-800">${emp.name}</h2>
+      <!-- Header Box -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-6">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-200">${(emp.name||'?')[0].toUpperCase()}</div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-800">${emp.name}</h2>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-sm text-gray-500">${emp.id}</span>
+                <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                <span class="text-sm px-2.5 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">${emp.designation||'—'}</span>
+              </div>
+            </div>
+          </div>
+          <button onclick="openDeleteModal('${emp.id}')" class="px-4 py-2 text-red-500 text-sm hover:bg-red-50 rounded-xl font-medium transition flex items-center gap-1.5">🗑 Delete</button>
+        </div>
+      </div>
+      <!-- Employee Info Box -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-6">
+        <div class="grid grid-cols-3 gap-4">
+          <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">📧 Email</p><p class="text-sm font-semibold text-gray-800">${emp.email}</p></div>
+          <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">📞 Phone</p><p class="text-sm font-semibold text-gray-800">${emp.phone||'—'}</p></div>
+          <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">🎂 Date of Birth</p><p class="text-sm font-semibold text-gray-800">${toDisplayDate(emp.dob)}</p></div>
+          <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">📅 Date of Joining</p><p class="text-sm font-semibold text-gray-800">${toDisplayDate(emp.doj)}</p></div>
+          <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">🌍 Nationality</p><p class="text-sm font-semibold text-gray-800">${emp.nationality||'—'}</p></div>
+          <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">⚤ Gender</p><p class="text-sm font-semibold text-gray-800">${emp.gender||'—'}</p></div>
+          ${emp.projectTag
+            ? `<div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200" id="projectTagSection${emp.id}"><p class="text-xs text-gray-500 mb-1">🏷️ Project Tag</p><p class="text-sm font-semibold text-gray-800 flex items-center gap-2">🏷️ ${emp.projectTag} <button onclick="editProjectTagUi('${emp.id}')" class="text-blue-500 hover:text-blue-700 text-xs" title="Edit">✏️</button> <button onclick="untagEmployee('${emp.id}')" class="text-red-500 hover:text-red-700 text-xs" title="Remove tag">✕ Untag</button></p><div id="tagInput${emp.id}" class="hidden mt-2 flex gap-2" data-current-tag="${emp.projectTag}"></div></div>`
+            : `<div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 flex flex-col items-center justify-center"><button onclick="editProjectTagUi('${emp.id}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium px-4 py-2 rounded-lg border border-blue-300 hover:bg-blue-50 transition">+ Add Project Tag</button><div id="tagInput${emp.id}" class="hidden mt-2 flex gap-2 w-full"></div></div>`}
+          <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 col-span-2"><p class="text-xs text-gray-500 mb-1">📍 Address</p><p class="text-sm font-semibold text-gray-800">${emp.address||'—'}</p></div>
+          <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+            <p class="text-xs text-gray-500 mb-1">📄 Document</p>
             <div class="flex items-center gap-2 mt-1">
-              <span class="text-sm text-gray-500">${emp.id}</span>
-              <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-              <span class="text-sm px-2.5 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">${emp.designation||'—'}</span>
+              ${emp.document?`<button onclick="viewDocument('${emp.id}')" class="text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1">📄 View</button><button onclick="replaceDocument('${emp.id}')" class="text-orange-600 hover:bg-orange-50 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1">🔄 Replace</button>`:`<button onclick="replaceDocument('${emp.id}')" class="text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1">📄 Upload</button>`}
             </div>
           </div>
         </div>
-        <button onclick="openDeleteModal('${emp.id}')" class="px-4 py-2 text-red-500 text-sm hover:bg-red-50 rounded-xl font-medium transition flex items-center gap-1.5">🗑 Delete</button>
       </div>
-      <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">📧 Email</p><p class="text-sm font-semibold text-gray-800">${emp.email}</p></div>
-        <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">📞 Phone</p><p class="text-sm font-semibold text-gray-800">${emp.phone||'—'}</p></div>
-        <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">🎂 Date of Birth</p><p class="text-sm font-semibold text-gray-800">${toDisplayDate(emp.dob)}</p></div>
-        <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">📅 Date of Joining</p><p class="text-sm font-semibold text-gray-800">${toDisplayDate(emp.doj)}</p></div>
-        <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">🌍 Nationality</p><p class="text-sm font-semibold text-gray-800">${emp.nationality||'—'}</p></div>
-        <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"><p class="text-xs text-gray-500 mb-1">⚤ Gender</p><p class="text-sm font-semibold text-gray-800">${emp.gender||'—'}</p></div>
-        ${emp.projectTag
-          ? `<div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200" id="projectTagSection${emp.id}"><p class="text-xs text-gray-500 mb-1">🏷️ Project Tag</p><p class="text-sm font-semibold text-gray-800 flex items-center gap-2">🏷️ ${emp.projectTag} <button onclick="editProjectTagUi('${emp.id}')" class="text-blue-500 hover:text-blue-700 text-xs" title="Edit">✏️</button> <button onclick="untagEmployee('${emp.id}')" class="text-red-500 hover:text-red-700 text-xs" title="Remove tag">✕ Untag</button></p><div id="tagInput${emp.id}" class="hidden mt-2 flex gap-2" data-current-tag="${emp.projectTag}"></div></div>`
-          : `<div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 flex flex-col items-center justify-center"><button onclick="editProjectTagUi('${emp.id}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium px-4 py-2 rounded-lg border border-blue-300 hover:bg-blue-50 transition">+ Add Project Tag</button><div id="tagInput${emp.id}" class="hidden mt-2 flex gap-2 w-full"></div></div>`}
-        <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 col-span-2"><p class="text-xs text-gray-500 mb-1">📍 Address</p><p class="text-sm font-semibold text-gray-800">${emp.address||'—'}</p></div>
-        <div class="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-          <p class="text-xs text-gray-500 mb-1">📄 Document</p>
-          <div class="flex items-center gap-2 mt-1">
-            ${emp.document?`<button onclick="viewDocument('${emp.id}')" class="text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1">📄 View</button><button onclick="replaceDocument('${emp.id}')" class="text-orange-600 hover:bg-orange-50 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1">🔄 Replace</button>`:`<button onclick="replaceDocument('${emp.id}')" class="text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1">📄 Upload</button>`}
-          </div>
-        </div>
-      </div>
-      <div class="mb-6 p-5 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200">
+      <!-- Credentials Box -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-6">
         <div class="flex items-center justify-between mb-3">
           <h3 class="font-semibold text-gray-700">🔑 Credentials</h3>
           <button onclick="copyProfileCredentials('${emp.id}')" class="text-xs px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 font-medium transition" id="copyCredBtn${emp.id}">📋 Copy Credentials</button>
@@ -484,7 +494,8 @@ window.selectEmployee=async function(id){
           <div class="p-3 bg-white rounded-xl border border-gray-200"><p class="text-xs text-gray-500">Password</p><p class="font-mono font-bold text-yellow-700 mt-0.5">${emp.password||'—'}</p></div>
         </div>
       </div>
-      <div class="mb-6">
+      <!-- Leave Balance Box -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-6">
         <h3 class="font-semibold text-gray-700 mb-3">📊 Leave Balance</h3>
         <div class="grid grid-cols-5 gap-3">
           ${[['sick','Sick'],['casual','Casual'],['business','Business'],['emergency','Emergency/Personal'],['family','Family/Vacation']].map(([t,label])=>{
@@ -496,7 +507,8 @@ window.selectEmployee=async function(id){
           }).join('')}
         </div>
       </div>
-      <div>
+      <!-- Leave History Box -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-6">
         <div class="flex items-center justify-between mb-3">
           <h3 class="font-semibold text-gray-700">📋 Leave History</h3>
         </div>
