@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from database import get_db, Employee, LeaveRecord, Notification, generate_id
 from auth import hash_password, get_current_user
-from agents.tools import get_leave_balance, get_leave_history
+from ai.agents.tools import get_leave_balance, get_leave_history
 from email_service import send_email
 
 router = APIRouter(prefix="/api/employees", tags=["employees"])
@@ -59,7 +59,7 @@ class CreateEmployeeRequest(BaseModel):
 def list_employees(db: Session = Depends(get_db), user: Employee = Depends(get_current_user)):
     if user.role not in ("hr", "manager"):
         raise HTTPException(status_code=403, detail="Not authorized")
-    from agents.tools import get_leave_balance
+    from ai.agents.tools import get_leave_balance
     emps = db.query(Employee).filter(Employee.role == "employee").all()
     return [
         {
@@ -93,7 +93,7 @@ def get_employee(employee_id: str, db: Session = Depends(get_db)):
     emp = db.query(Employee).filter(Employee.id == employee_id).first()
     if not emp:
         raise HTTPException(status_code=404, detail="Employee not found")
-    from agents.tools import get_leave_balance
+    from ai.agents.tools import get_leave_balance
     computed_balance = get_leave_balance(db, employee_id)
     return {
         "id": emp.id, "name": emp.name, "email": emp.email, "role": emp.role,
@@ -293,7 +293,7 @@ def employee_leaves(employee_id: str, limit: int = 10, db: Session = Depends(get
 
 @router.get("/{employee_id}/upcoming")
 def employee_upcoming(employee_id: str, db: Session = Depends(get_db)):
-    from agents.tools import get_upcoming_leaves as gul
+    from ai.agents.tools import get_upcoming_leaves as gul
     return gul(db, employee_id)
 
 

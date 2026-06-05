@@ -1,4 +1,12 @@
 import os
+import sys
+
+# Ensure project root and backend dir are in sys.path for cross-package imports
+BASE_DIR = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+sys.path.insert(0, PROJECT_ROOT)
+sys.path.insert(0, BASE_DIR)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -8,12 +16,10 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from dotenv import load_dotenv
 from database import Base, engine
 from seed import seed_database
-from ai_engine.vector_store import seed_policy_vector_store
+from ai.engine.vector_store import seed_policy_vector_store
 from routers import auth, employees, leaves, notifications, chat, frontend, holidays
 
 load_dotenv()
-
-BASE_DIR = os.path.dirname(__file__)
 
 Base.metadata.create_all(bind=engine)
 seed_database()
@@ -51,7 +57,7 @@ app.include_router(chat.router)
 app.include_router(holidays.router)
 app.include_router(frontend.router, prefix="")
 
-app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+app.mount("/static", StaticFiles(directory=os.path.join(PROJECT_ROOT, "frontend", "static")), name="static")
 
 # Make templates accessible to other modules
 import routers.frontend as _fe

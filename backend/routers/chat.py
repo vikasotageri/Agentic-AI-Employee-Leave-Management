@@ -1,7 +1,7 @@
 import os
 from fastapi import APIRouter
 from pydantic import BaseModel
-from agents.graphs import build_employee_graph, build_manager_graph, build_hr_graph
+from ai.agents.graphs import build_employee_graph, build_manager_graph, build_hr_graph
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
@@ -23,7 +23,7 @@ async def chat(req: ChatRequest):
     user = {"id": req.user_id, "name": req.user_name, "role": req.user_role}
 
     # Restore conversation history from client if server memory is empty
-    from ai_engine.agent_memory import conversation_memory
+    from ai.engine.agent_memory import conversation_memory
     existing = conversation_memory.get(req.user_id)
     if not existing and req.history:
         for h in req.history[-10:]:

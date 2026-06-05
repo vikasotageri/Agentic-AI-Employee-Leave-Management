@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from database import get_db, Employee, LeaveRecord
 from auth import get_current_user
-from agents.tools import (
+from ai.agents.tools import (
     apply_leave, bulk_apply_leave, cancel_leave, approve_leave, reject_leave,
     approve_cancellation, reject_cancellation,
     get_pending_requests, get_cancellation_requests,
@@ -121,5 +121,5 @@ def availability(req: AvailabilityRequest, db: Session = Depends(get_db)):
 
 @router.get("/employee/{employee_id}")
 def employee_leave_records(employee_id: str, db: Session = Depends(get_db)):
-    from agents.tools import get_leave_history as glh
+    from ai.agents.tools import get_leave_history as glh
     return glh(db, employee_id, 200)
