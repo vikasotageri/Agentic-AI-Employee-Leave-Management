@@ -32,7 +32,7 @@ async function loadNotifications(){
         </div>
         ${notifs.slice(0,10).map(n=>`
           <div class="px-4 py-3 border-b border-gray-100 hover:bg-blue-50 cursor-pointer text-sm flex items-start gap-2 transition ${n.read?'':'bg-blue-50 font-medium'}" onclick="markNotifRead('${n.id}')">
-            <span class="mt-0.5 ${n.read?'opacity-30':'opacity-100'}">${n.type==='employee_created'?'🎉':n.type==='account_created'?'👋':n.type==='leave_approved'||n.message?.includes('Approval')?'✅':'📌'}</span>
+            <span class="mt-0.5 ${n.read?'opacity-30':'opacity-100'}">${n.type==='employee_created'?'🎉':n.type==='account_created'?'👋':n.type==='leave_approved'||n.message?.includes('Approval')?'✅':n.type==='leave_rejected'?'❌':'📌'}</span>
             <div class="flex-1 min-w-0">
               <p class="text-gray-800 truncate">${n.title}</p>
               <p class="text-gray-500 text-xs mt-0.5 truncate">${n.message?.substring(0,80)||''}</p>
@@ -62,10 +62,10 @@ window.clearAllNotifs=async function(){
   }catch(e){console.error('Error clearing all:',e)}
 }
 
-// Poll notifications every 30 seconds
+// Poll notifications every 5 seconds for near-instant badge updates
 setInterval(() => {
   if(isAuthenticated()) loadNotifications()
-}, 30000)
+}, 5000)
 
 document.addEventListener('click',function(e){
   const bell=document.getElementById('notificationBell')

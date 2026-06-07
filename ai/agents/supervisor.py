@@ -259,8 +259,6 @@ def _role_tools(role: str):
             "get_leave_history",
             "get_leave_by_date",
             "get_upcoming_leaves",
-            "apply_leave",
-            "cancel_leave",
             "get_pending_requests",
             "approve_leave",
             "reject_leave",

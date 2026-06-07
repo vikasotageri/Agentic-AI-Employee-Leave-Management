@@ -627,6 +627,7 @@ def approve_leave(db: Session, leave_id: str, approver_id: str = "MGR001"):
     """
     Approve a pending leave request (DB level).
     Called by REST endpoint and agent tool wrapper.
+    Creates in-app notification for the employee.
     """
     leave = db.query(LeaveRecord).filter(LeaveRecord.id == leave_id).first()
     if not leave:
@@ -634,6 +635,15 @@ def approve_leave(db: Session, leave_id: str, approver_id: str = "MGR001"):
     leave.status = "approved"
     leave.approved_by = approver_id
     leave.notified_manager = True
+    try:
+        db.add(Notification(
+            user_id=leave.employee_id,
+            title=f"Leave Approved - {leave.type}",
+            message=f"Your {leave.type} leave on {leave.start_date} has been approved.",
+            type="leave_approved",
+        ))
+    except Exception as e:
+        print(f"[NOTIF ERROR] approve_leave: {e}")
     db.commit()
     return {"success": True}
 
@@ -642,6 +652,7 @@ def reject_leave(db: Session, leave_id: str, reason: str):
     """
     Reject a pending leave request with reason (DB level).
     Called by REST endpoint and agent tool wrapper.
+    Creates in-app notification for the employee.
     """
     leave = db.query(LeaveRecord).filter(LeaveRecord.id == leave_id).first()
     if not leave:
@@ -649,6 +660,15 @@ def reject_leave(db: Session, leave_id: str, reason: str):
     leave.status = "rejected"
     leave.rejection_reason = reason
     leave.notified_manager = True
+    try:
+        db.add(Notification(
+            user_id=leave.employee_id,
+            title=f"Leave Rejected - {leave.type}",
+            message=f"Your {leave.type} leave on {leave.start_date} was rejected. Reason: {reason}",
+            type="leave_rejected",
+        ))
+    except Exception as e:
+        print(f"[NOTIF ERROR] reject_leave: {e}")
     db.commit()
     return {"success": True}
 
@@ -1818,6 +1838,16 @@ def approve_leave_by_employee_wrapper(employee_id: str, date: str) -> dict:
         leave.approved_by = CURRENT_AI_CONTEXT.get("user_id", "")
         leave.notified_manager = True
         db.commit()
+        try:
+            db.add(Notification(
+                user_id=employee_id,
+                title=f"Leave Approved - {leave.type}",
+                message=f"Your {leave.type} leave on {lookup} has been approved.",
+                type="leave_approved",
+            ))
+            db.commit()
+        except Exception as e:
+            print(f"[NOTIF ERROR] Failed to create approve notification: {e}")
         return {"success": True, "leave_id": leave.id, "employee_id": employee_id, "date": lookup, "type": leave.type}
     finally:
         db.close()
@@ -1845,6 +1875,16 @@ def reject_leave_by_employee_wrapper(employee_id: str, date: str, reason: str) -
         leave.rejection_reason = reason
         leave.notified_manager = True
         db.commit()
+        try:
+            db.add(Notification(
+                user_id=employee_id,
+                title=f"Leave Rejected - {leave.type}",
+                message=f"Your {leave.type} leave on {lookup} was rejected. Reason: {reason}",
+                type="leave_rejected",
+            ))
+            db.commit()
+        except Exception as e:
+            print(f"[NOTIF ERROR] Failed to create reject notification: {e}")
         return {"success": True, "leave_id": leave.id, "employee_id": employee_id, "date": lookup, "type": leave.type}
     finally:
         db.close()
