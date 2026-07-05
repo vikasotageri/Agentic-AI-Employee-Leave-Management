@@ -41,85 +41,18 @@ pinned: false
 
 ### 🌐 Option 1: Visit the Live Demo (No Installation)
 
-Open any portal below in your browser. No setup required.
+### 🌍 Live Demo (Open to Anyone, Anywhere)
 
----
+Anyone in the world can access these URLs **anytime** — no sign-up, no install, no restrictions:
 
-#### 🧑‍💼 HR Portal
+| Portal | Live URL | Demo Login |
+|--------|----------|------------|
+| 🧑‍💼 **HR Portal** | [https://VikasOtageri-leaveflow.hf.space/hr](https://VikasOtageri-leaveflow.hf.space/hr) | `hr@company.com` / `pass123` (static) |
+| 👔 **Manager Portal** | [https://VikasOtageri-leaveflow.hf.space/manager](https://VikasOtageri-leaveflow.hf.space/manager) | `manager@company.com` / `pass123` (static) |
+| 👨‍💼 **Employee Portal** | [https://VikasOtageri-leaveflow.hf.space/employee](https://VikasOtageri-leaveflow.hf.space/employee) | Created by HR — unique per employee |
 
-**URL:** https://VikasOtageri-leaveflow.hf.space/hr
-
-**Demo login:** `hr@company.com` / `pass123`
-
-**What you can do here:**
-- View all employees in the system
-- Create new employees (ID & password generated automatically)
-- Delete employees
-- Upload employee documents
-- Assign/remove project tags (tagged employees require manager approval for ALL leaves)
-- Resend credentials to employees
-- View leave history of any employee
-
-**Step-by-step — Creating your first employee:**
-
-| Step | Action |
-|------|--------|
-| 1 | Login with `hr@company.com` / `pass123` |
-| 2 | Click the **"➕ Add"** button |
-| 3 | Fill in the form (name, email, phone, DOJ, etc.) |
-| 4 | Click **Submit** |
-| 5 | A popup shows **Employee ID** (e.g. `EMP001`) and **Password** — **COPY THESE IMMEDIATELY** |
-
-> ⚠️ **Important:** The live demo on Hugging Face Spaces **cannot send emails** (free tier blocks SMTP ports). The welcome email will NOT arrive. You **must** copy the Employee ID and password from the popup. If you close it accidentally, click **"Resend Credentials"** on the employee's card — the password appears in the notification bell 🔔.
->
-> ✅ When you run the system **locally** on your computer with Gmail credentials set up, emails will work.
-
----
-
-#### 👔 Manager Portal
-
-**URL:** https://VikasOtageri-leaveflow.hf.space/manager
-
-**Demo login:** `manager@company.com` / `pass123`
-
-**What you can do here:**
-- See dashboard stats: pending leaves, approved today, total team members
-- Approve or reject employee leave requests
-- Manage cancellation requests
-- View team members with their leave balances
-- Click any employee to see their leave history
-- **AI Chat** — ask questions like *"How many leaves did I approve today?"* or *"Show team summary"*
-
-**Step-by-step:**
-
-| Step | Action |
-|------|--------|
-| 1 | Login with `manager@company.com` / `pass123` |
-| 2 | See dashboard stats at the top |
-| 3 | Go to **"Approvals"** tab → See pending requests |
-| 4 | Click ✅ **Approve** or ❌ **Reject** |
-| 5 | Scroll down to see team members with their leave balances |
-| 6 | Click any employee card for detailed history |
-| 7 | Use **AI Chat** (bottom-right) to ask questions |
-
-> Dashboard auto-refreshes every 12 seconds.
-
----
-
-#### 👨‍💼 Employee Portal
-
-**URL:** https://VikasOtageri-leaveflow.hf.space/employee
-
-**Login:** Use the credentials from HR (e.g. `EMP001` + password)
-
-**What you can do here:**
-- View your leave balance (Casual, Sick, Emergency, Business, Family, Unpaid)
-- Apply for leave (select type, dates, reason)
-- Cancel leaves (within 70-day window)
-- View your leave history with status
-- **AI Chat** — ask *"What is my balance?"* or *"Apply for casual leave tomorrow"*
-
-**Step-by-step — Applying for leave:**
+> **HR & Manager** use fixed demo credentials (same for everyone).  
+> **Employee** credentials are generated dynamically when HR creates a new employee — each visitor gets unique login details.
 
 | Step | Action |
 |------|--------|
@@ -336,11 +269,11 @@ Wait 1-2 minutes. You'll see:
 
 #### Step 5: Open in Browser
 
-| Portal | URL | Login |
-|--------|-----|-------|
-| 🧑‍💼 HR | http://localhost:8003/hr | `hr@company.com` / `pass123` |
-| 👔 Manager | http://localhost:8002/manager | `manager@company.com` / `pass123` |
-| 👨‍💼 Employee | http://localhost:8001/employee | Created by HR |
+| Portal | URL | Login | Type |
+|--------|-----|-------|------|
+| 🧑‍💼 HR | http://localhost:8003/hr | `hr@company.com` / `pass123` | Static (same for all) |
+| 👔 Manager | http://localhost:8002/manager | `manager@company.com` / `pass123` | Static (same for all) |
+| 👨‍💼 Employee | http://localhost:8001/employee | Created by HR | Dynamic (unique per employee) |
 
 #### 🛠️ Troubleshooting
 
@@ -723,10 +656,11 @@ Edit `backend/.env` file (see [Step 4](#step-4-set-up-environment-variables))
 
 ### Seeded Demo Accounts
 
-| Role | Email | Password |
-|------|-------|----------|
-| HR | hr@company.com | pass123 |
-| Manager | manager@company.com | pass123 |
+| Role | Email / ID | Password | Type |
+|------|-----------|----------|------|
+| HR | hr@company.com | pass123 | **Static** — same for all demo users |
+| Manager | manager@company.com | pass123 | **Static** — same for all demo users |
+| Employee | EMP001 (auto-generated) | Auto-generated | **Dynamic** — created by HR, unique per visitor |
 
 ---
 
