@@ -205,6 +205,32 @@ When you send a prompt, pay attention to:
 
 ---
 
+## 📧 Email Feature — How It Works
+
+This system can send **automatic emails** using Gmail SMTP. Here's what it sends and when:
+
+| Email Trigger | Sent To | Content |
+|---------------|---------|---------|
+| 🆕 **New employee created** | The new employee's email | Welcome message with Employee ID, password, DOJ, and login link |
+| 🔄 **Credentials resent** | Employee's email | Same as above — for when they forget their password |
+| 🔑 **Password reset** | Employee's email | New randomly generated password |
+
+### How to set it up (locally)
+
+1. Enable **2-Step Verification** on your Google account: [myaccount.google.com/security](https://myaccount.google.com/security)
+2. Create an **App Password**: [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+   - Select app: **Mail** → Device: **Other** → Name it `AI MSIS`
+   - Copy the 16-character password
+3. Add to your `backend/.env` file:
+   ```
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=your-16-char-app-password
+   ```
+
+> ⚠️ **Live demo note:** The HF Spaces free tier blocks SMTP ports, so emails won't send from the live demo. Run locally for email features.
+
+---
+
 ### 💻 Option 2: Run Locally on Your Computer
 
 Follow these steps to run the project on your own machine.
@@ -698,7 +724,11 @@ Edit `backend/.env` file (see [Step 4](#step-4-set-up-environment-variables))
 ## 👨‍💻 Author
 
 **Vikas Otageri** — AI & Full Stack Developer  
+🎓 **M.C.A.** — Master of Computer Applications  
 🎓 Currently Student at **Manipal School of Information Science, Manipal**
+
+📧 vikasotageri234@gmail.com  
+📧 vikas1.msismpl2025@learner.manipal.edu
 
 [![GitHub](https://img.shields.io/badge/GitHub-vikasotageri-181717?logo=github)](https://github.com/vikasotageri)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-vikasotageri-0A66C2?logo=linkedin)](https://www.linkedin.com/in/vikasotageri/)
