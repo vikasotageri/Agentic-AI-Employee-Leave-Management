@@ -46,11 +46,14 @@ Choose a portal below, open the URL in your browser, and follow the steps:
 2. Login with: **Email:** `hr@company.com` | **Password:** `pass123`
 3. You'll see the **HR Dashboard** with all employees listed
 4. **To create an employee:** Click the "➕ Add" button → Fill in the form (name, email, phone, DOJ, etc.) → Submit
-5. The system will generate an **Employee ID** (e.g. `EMP001`) and a random password — note them down
+5. The system will generate an **Employee ID** (e.g. `EMP001`) and a random password — **copy them immediately** (see note below)
 6. You can also **project-tag** employees (tagged employees need manager approval for ALL leaves)
 7. Click on any employee to **view/edit documents, resend credentials, or delete**
 8. Click the 🔔 bell icon for notifications
-9. Use the **AI Chat** at bottom-right to ask HR questions like *"Show me all employees"*
+
+> **⚠️ Email Note:** The live demo on Hugging Face Spaces **cannot send emails** (free tier blocks SMTP ports). So the welcome email with credentials will NOT arrive. You must **copy the Employee ID and password** from the popup after creating an employee. If you miss it, click "Resend Credentials" and check the 🔔 notification bell — the password is shown there too.
+>
+> ✅ When you run the system **locally** on your computer, emails will work if you set up your Gmail credentials in `.env`.
 
 ---
 
@@ -175,7 +178,7 @@ This project is modular. You can pick and choose what you need:
 |--------|-----|-------------|-----------------|
 | 👨‍💼 **Employee** | [leaveflow.hf.space/employee](https://VikasOtageri-leaveflow.hf.space/employee) | All employees | Apply/cancel leaves, check balance, view history, chat with AI assistant |
 | 👔 **Manager** | [leaveflow.hf.space/manager](https://VikasOtageri-leaveflow.hf.space/manager) | Team managers | Approve/reject leaves, manage team, view analytics, AI-powered reports |
-| 🧑‍💼 **HR** | [leaveflow.hf.space/hr](https://VikasOtageri-leaveflow.hf.space/hr) | HR admins | Create/manage employees, view all records, project tags, AI operations |
+| 🧑‍💼 **HR** | [leaveflow.hf.space/hr](https://VikasOtageri-leaveflow.hf.space/hr) | HR admins | Create/manage employees, view all records, project tags, notifications |
 
 ---
 
@@ -190,7 +193,7 @@ Unlike basic leave systems, this uses a **Supervisor + Specialist Agent architec
 ## 🧠 Key Highlights
 
 - 🤖 **Multi-Agent AI Architecture** — Supervisor Agent classifies intent → routes to 5 specialist agents
-- 👥 **Three-Role Access** — Employee | Manager | HR — each with dedicated dashboard & AI assistant
+- 👥 **Three-Role Access** — Employee, Manager, and HR — each with dedicated dashboard
 - 🔐 **Secure JWT Authentication** — bcrypt hashing + python-jose tokens with 8h expiry
 - 📊 **Real-time Dashboards** — Live leave balances, team overview, approval workflows
 - 📩 **Email Notifications** — Auto-email credentials to new employees via Gmail SMTP
