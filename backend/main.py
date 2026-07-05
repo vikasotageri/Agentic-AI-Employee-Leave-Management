@@ -89,7 +89,8 @@ app = FastAPI(title="LeaveFlow API", version="1.0.0")
 class NoCacheMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
-        if response.headers.get("content-type", "").startswith("text/html"):
+        ct = response.headers.get("content-type", "")
+        if ct.startswith("text/html") or ct.startswith("application/javascript") or ct.startswith("text/javascript"):
             response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
             response.headers["Pragma"] = "no-cache"
             response.headers["Expires"] = "0"
