@@ -749,7 +749,7 @@ Edit `backend/.env` file (see [Step 4](#step-4-set-up-environment-variables))
 [![GitHub](https://img.shields.io/badge/GitHub-vikasotageri-181717?logo=github)](https://github.com/vikasotageri)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-vikasotageri-0A66C2?logo=linkedin)](https://www.linkedin.com/in/vikasotageri/)
 [![Email](https://img.shields.io/badge/Email-vikasotageri234@gmail.com-EA4335?logo=gmail)](mailto:vikasotageri234@gmail.com)
-[![Email](https://img.shields.io/badge/Email-vikas1.msismpl2025@learner.manipal.edu-purple?logo=mail.ru)](mailto:vikas1.msismpl2025@learner.manipal.edu)
+[![Email](https://img.shields.io/badge/Email-vikas1.msismpl2025@learner.manipal.edu-0078D4?logo=microsoft-outlook)](mailto:vikas1.msismpl2025@learner.manipal.edu)
 
 ---
 
