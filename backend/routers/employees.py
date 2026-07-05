@@ -267,7 +267,7 @@ def create_employee(req: CreateEmployeeRequest, db: Session = Depends(get_db), u
     db.add(emp)
     db.add(Notification(
         user_id=new_id,
-        title="Welcome to MSIS!",
+        title="Welcome to AI MSIS!",
         message=f"Account created. ID: {new_id}, Email: {req.email}, Password: {password}, DOJ: {req.doj}",
         type="account_created",
     ))

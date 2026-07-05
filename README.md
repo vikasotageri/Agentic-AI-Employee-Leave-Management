@@ -1,5 +1,5 @@
 ---
-title: MSIS Leave Management System
+title: AI MSIS Leave Management System
 emoji: 📋
 colorFrom: blue
 colorTo: indigo

@@ -112,7 +112,7 @@ def forgot_password(req: ForgotPasswordRequest, background_tasks: BackgroundTask
     <p>Please log in and change your password.</p>
     <p>Regards,<br>AI MSIS Team</p>
     """
-    background_tasks.add_task(send_email, emp.email, "MSIS - Password Reset", html)
+    background_tasks.add_task(send_email, emp.email, "AI MSIS - Password Reset", html)
 
     return {"success": True, "message": "New password sent to your email"}
 
