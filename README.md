@@ -30,36 +30,132 @@ pinned: false
 
 ## 👋 For Visitors — How to Use This Project
 
-### Option 1: Visit the Live Demo (No Installation)
+---
 
-Just open any portal in your browser:
+### 🌐 Option 1: Visit the Live Demo (No Installation)
 
-| Portal | URL | Login Credentials | What You Can Do |
-|--------|-----|-------------------|-----------------|
-| 👨‍💼 **Employee** | [leaveflow.hf.space/employee](https://VikasOtageri-leaveflow.hf.space/employee) | Created by HR (ask admin) | Apply/cancel leaves, check balance, AI chat |
-| 👔 **Manager** | [leaveflow.hf.space/manager](https://VikasOtageri-leaveflow.hf.space/manager) | `manager@company.com` / `pass123` | Approve/reject leaves, team analytics, AI reports |
-| 🧑‍💼 **HR** | [leaveflow.hf.space/hr](https://VikasOtageri-leaveflow.hf.space/hr) | `hr@company.com` / `pass123` | Create/manage employees, project tags, AI ops |
+Choose a portal below, open the URL in your browser, and follow the steps:
 
-> **First-time visitor?** Start with the **HR portal** → Create a dummy employee → Then log into **Employee portal** with those credentials. Or just explore the **Manager portal** directly with the demo account.
+---
 
-### Option 2: Run Locally on Your Machine
+#### 🧑‍💼 1. HR Portal
+**URL:** [VikasOtageri-leaveflow.hf.space/hr](https://VikasOtageri-leaveflow.hf.space/hr)
+
+**Step-by-step:**
+1. Open the URL above
+2. Login with: **Email:** `hr@company.com` | **Password:** `pass123`
+3. You'll see the **HR Dashboard** with all employees listed
+4. **To create an employee:** Click the "➕ Add" button → Fill in the form (name, email, phone, DOJ, etc.) → Submit
+5. The system will generate an **Employee ID** (e.g. `EMP001`) and a random password — note them down
+6. You can also **project-tag** employees (tagged employees need manager approval for ALL leaves)
+7. Click on any employee to **view/edit documents, resend credentials, or delete**
+8. Click the 🔔 bell icon for notifications
+9. Use the **AI Chat** at bottom-right to ask HR questions like *"Show me all employees"*
+
+---
+
+#### 👔 2. Manager Portal
+**URL:** [VikasOtageri-leaveflow.hf.space/manager](https://VikasOtageri-leaveflow.hf.space/manager)
+
+**Step-by-step:**
+1. Open the URL above
+2. Login with: **Email:** `manager@company.com` | **Password:** `pass123`
+3. You'll see the **Manager Dashboard** with team stats (pending leaves, approved today, team size)
+4. **Approve/reject leaves:** Go to the "Approvals" tab → See all pending requests → Click ✅ Approve or ❌ Reject
+5. **View team members:** Scroll down to see all employees under you with their leave balances
+6. Click any employee card to see their **detailed leave history**
+7. Use the **AI Chat** to ask things like *"How many leaves did I approve today?"* or *"Show team leave summary"*
+8. The dashboard **auto-refreshes every 12 seconds**
+
+---
+
+#### 👨‍💼 3. Employee Portal
+**URL:** [VikasOtageri-leaveflow.hf.space/employee](https://VikasOtageri-leaveflow.hf.space/employee)
+
+**Step-by-step:**
+1. Open the URL above
+2. Login with credentials given by HR (e.g. `EMP001` / password from HR)
+3. You'll see your **leave balance** (Casual, Sick, Emergency, Business, Family, Unpaid)
+4. **To apply leave:** Click "Apply Leave" → Select leave type, dates, reason → Submit
+5. Leaves within policy limits get **auto-approved** immediately
+6. Leaves requiring manager approval will show as **pending**
+7. **To cancel:** Find the leave in your history → Click "Cancel" (only within 70-day window)
+8. Use the **AI Chat** to ask: *"What is my leave balance?"* or *"Apply for casual leave tomorrow"*
+
+---
+
+### 💻 Option 2: Run Locally on Your Computer
+
+Follow these steps to get the project running on your own machine:
+
+#### Step 1: Install Prerequisites
+
+| Required | Version | Download |
+|----------|---------|----------|
+| Python | 3.12 or higher | [python.org/downloads](https://python.org/downloads) |
+| Git | Latest | [git-scm.com/downloads](https://git-scm.com/downloads) |
+| OpenAI API Key | - | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
+
+> **No OpenAI key?** The system will still work for basic operations (apply leaves, approve, etc.), but the AI Chat feature won't function.
+
+#### Step 2: Clone the Repository
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/vikasotageri/leave-management.git
 cd leave-management
+```
 
-# 2. Set up environment
+#### Step 3: Set Up Environment Variables
+
+```bash
 cp backend/.env.example backend/.env
-# Edit backend/.env — add your OPENAI_API_KEY
+```
 
-# 3. Run (installs dependencies + starts all servers)
+Now open `backend/.env` in any text editor and add your keys:
+
+```
+OPENAI_API_KEY=sk-your-openai-api-key-here
+SECRET_KEY=any-random-string-for-jwt
+SMTP_USER=your-email@gmail.com      # Optional: for sending emails
+SMTP_PASS=your-gmail-app-password   # Optional: for sending emails
+```
+
+> **What is SECRET_KEY?** Any random string (e.g. `mysecret123`). It's used to encrypt login tokens.
+
+#### Step 4: Start the System
+
+```bash
 bash start.sh
 ```
 
-Open http://localhost:8001/employee — done.
+This command will:
+- ✅ Install all Python dependencies (FastAPI, LangGraph, OpenAI, etc.)
+- ✅ Create the SQLite database
+- ✅ Seed HR and Manager demo accounts
+- ✅ Start all 3 portal servers
 
-### Option 3: Integrate Into Your Own Project
+#### Step 5: Open in Browser
+
+| Portal | URL |
+|--------|-----|
+| Employee | [http://localhost:8001/employee](http://localhost:8001/employee) |
+| Manager | [http://localhost:8002/manager](http://localhost:8002/manager) |
+| HR | [http://localhost:8003/hr](http://localhost:8003/hr) |
+
+Login with the same demo credentials from Option 1.
+
+#### Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `Command not found: pip` | Install Python from python.org, check "Add to PATH" |
+| `Port 8001 already in use` | Kill existing process: `kill $(lsof -ti:8001)` |
+| AI Chat not responding | Check your `OPENAI_API_KEY` in `.env` is correct |
+| Database errors | Delete `backend/leave_management.db` and restart |
+
+---
+
+### 🔧 Option 3: Integrate Into Your Own Project
 
 This project is modular. You can pick and choose what you need:
 
@@ -318,9 +414,11 @@ This project is **open-source** for learning and development purposes.
 
 ## 👨‍💻 Author
 
-**Vikas Otageri** — AI & Full Stack Developer
+**Vikas Otageri** — AI & Full Stack Developer  
+🎓 Currently Student at **Manipal School of Information Science, Manipal**
 
 [![GitHub](https://img.shields.io/badge/GitHub-vikasotageri-181717?logo=github)](https://github.com/vikasotageri)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-vikasotageri-0A66C2?logo=linkedin)](https://www.linkedin.com/in/vikasotageri/)
 
 ---
 
