@@ -743,7 +743,7 @@ Edit `backend/.env` file (see [Step 4](#step-4-set-up-environment-variables))
 ## 👨‍💻 Author
 
 **Vikas Otageri** — AI & Full Stack Developer  
-🎓 **M.C.A.** — Master of Computer Applications  
+🎓 **M.Eng.** — Master of Engineering in Computer Science and Engineering  
 🎓 Currently Student at **Manipal School of Information Science, Manipal**
 
 [![GitHub](https://img.shields.io/badge/GitHub-vikasotageri-181717?logo=github)](https://github.com/vikasotageri)
