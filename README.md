@@ -1,5 +1,5 @@
 ---
-title: AI MSIS Leave Management System
+title: Agentic AI Employee Leave Management System
 emoji: 📋
 colorFrom: blue
 colorTo: indigo
@@ -7,7 +7,7 @@ sdk: docker
 pinned: false
 ---
 
-# 🤖 MSIS AI Leave Management System
+# 🤖 Agentic AI Employee Leave Management System
 
 <div align="center">
 
@@ -139,9 +139,9 @@ Open any portal below in your browser. No setup required.
 
 | Portal | Preview |
 |--------|---------|
-| 👨‍💼 **Employee Dashboard** | ![Employee Portal](https://raw.githubusercontent.com/vikasotageri/leave-management/master/screenshots/employee.png) |
-| 👔 **Manager Dashboard** | ![Manager Portal](https://raw.githubusercontent.com/vikasotageri/leave-management/master/screenshots/manager.png) |
-| 🧑‍💼 **HR Dashboard** | ![HR Portal](https://raw.githubusercontent.com/vikasotageri/leave-management/master/screenshots/hr.png) |
+| 👨‍💼 **Employee Dashboard** | ![Employee Portal](https://raw.githubusercontent.com/vikasotageri/agentic-ai-employee-leave-management/master/screenshots/employee.png) |
+| 👔 **Manager Dashboard** | ![Manager Portal](https://raw.githubusercontent.com/vikasotageri/agentic-ai-employee-leave-management/master/screenshots/manager.png) |
+| 🧑‍💼 **HR Dashboard** | ![HR Portal](https://raw.githubusercontent.com/vikasotageri/agentic-ai-employee-leave-management/master/screenshots/hr.png) |
 
 ---
 
@@ -261,8 +261,8 @@ Follow these steps to run the project on your own machine.
 #### Step 2: Download the Project
 
 ```bash
-git clone https://github.com/vikasotageri/leave-management.git
-cd leave-management
+git clone https://github.com/vikasotageri/agentic-ai-employee-leave-management.git
+cd agentic-ai-employee-leave-management
 ```
 
 #### Step 3: Get Your API Keys (Required)
@@ -294,7 +294,7 @@ Now put those keys into a file so the system can read them.
 cp backend/.env.example backend/.env
 ```
 
-**Where is this file?** Open the `leave-management` folder → open `backend` folder → find `.env` file. Open it in **Notepad** (Windows) or **TextEdit** (Mac) or **VS Code**.
+**Where is this file?** Open the `agentic-ai-employee-leave-management` folder → open `backend` folder → find `.env` file. Open it in **Notepad** (Windows) or **TextEdit** (Mac) or **VS Code**.
 
 **Replace the placeholder text with your actual keys:**
 
@@ -573,7 +573,7 @@ Below are real scenarios showing **why AI agents are powerful** compared to trad
 ## 📁 Project Structure
 
 ```
-leave-management/
+agentic-ai-employee-leave-management/
 │
 ├── ai/                              # AI Agents (LangGraph)
 │   ├── agents/

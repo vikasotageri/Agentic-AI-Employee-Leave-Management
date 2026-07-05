@@ -28,7 +28,7 @@ User → React Frontend (static) → Python FastAPI :8000
 
 ## Project Structure
 ```
-employee-leave-management/
+agentic-ai-employee-leave-management/
 ├── backend/            # Python FastAPI backend
 │   ├── main.py         # FastAPI app, static file serving, SPA fallback
 │   ├── database.py     # SQLAlchemy models (Employee, LeaveRecord, Notification, Holiday)
