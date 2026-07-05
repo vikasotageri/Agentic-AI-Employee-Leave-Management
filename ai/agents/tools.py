@@ -756,6 +756,22 @@ def get_cancellation_requests(db: Session, manager_id: str):
              "cancellation_reason": r.cancellation_reason} for r in records]
 
 
+def get_approved_leaves(db: Session, manager_id: str, date: str = ""):
+    """
+    Get leaves approved/rejected by a manager on a specific date (YYYY-MM-DD).
+    If date is empty, returns all leaves acted on by this manager.
+    """
+    query = db.query(LeaveRecord).filter(
+        LeaveRecord.approved_by == manager_id,
+    )
+    if date:
+        query = query.filter(LeaveRecord.applied_on.startswith(date))
+    records = query.all()
+    return [{"id": r.id, "employee_id": r.employee_id, "employee_name": r.employee_name,
+             "type": r.type, "start_date": r.start_date, "end_date": r.end_date,
+             "status": r.status, "applied_on": r.applied_on} for r in records]
+
+
 def get_team_leaves(db: Session, manager_id: str):
     """
     Get all approved leaves for a manager's team.
@@ -1708,6 +1724,15 @@ def get_pending_requests_wrapper(manager_id: str) -> list:
         db.close()
 
 
+@tool("get_approved_leaves", description="Get leaves approved/rejected by a manager on a specific date (YYYY-MM-DD). Use today's date for 'today', yesterday's date for 'yesterday'. Returns type, employee, status, and applied_on for each.")
+def get_approved_leaves_wrapper(manager_id: str, date: str = "") -> list:
+    db = SessionLocal()
+    try:
+        return get_approved_leaves(db, manager_id, date)
+    finally:
+        db.close()
+
+
 @tool("approve_leave", description="Approve a pending leave request.")
 def approve_leave_wrapper(leave_id: str) -> dict:
     db = SessionLocal()
@@ -1966,10 +1991,11 @@ TOOLS = [
     apply_leave_wrapper, cancel_leave_wrapper, get_pending_requests_wrapper,
     approve_leave_wrapper, reject_leave_wrapper, get_cancellation_requests_wrapper,
     approve_cancellation_wrapper, reject_cancellation_wrapper, check_team_availability_wrapper,
-    get_leave_policy, get_team_leave_stats_wrapper, get_employee_leave_detail_wrapper,
+    get_team_leave_stats_wrapper, get_employee_leave_detail_wrapper,
     get_all_employees_wrapper, get_employee_by_id_wrapper, get_hr_contact_wrapper, get_manager_info_wrapper,
     get_team_members_wrapper,
     approve_leave_by_employee_wrapper, reject_leave_by_employee_wrapper,
     search_policy, rag_query, get_conversation_history, get_leave_by_id_wrapper,
     get_employee_leave_summary_wrapper, get_my_profile_wrapper,
+    get_approved_leaves_wrapper,
 ]

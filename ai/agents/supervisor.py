@@ -281,6 +281,7 @@ def _role_tools(role: str):
             "get_team_members",
             "approve_leave_by_employee",
             "reject_leave_by_employee",
+            "get_approved_leaves",
         },
         "hr": {
             "get_leave_balance",
@@ -402,6 +403,7 @@ def call_agent_with_tools(system_prompt: str, user_message: str, user: dict) -> 
             "Use get_team_members to list team members. Filter results by designation, project_tag, or gender fields. "
             "Use get_employee_by_id to get specific employee details. "
             "Use get_pending_requests to see pending leaves. To split past vs upcoming: check each leave's start_date against today's date (given below). Past = start_date before today. Upcoming = start_date today or later. "
+            "Use get_approved_leaves(manager_id, date) to check what you approved/rejected on a specific date. "
             "Use get_cancellation_requests for cancellation count. "
             "For approve/reject by employee+date: use approve_leave_by_employee(employee_id, date) or reject_leave_by_employee(employee_id, date, reason). "
             "Never guess employee names, IDs, or counts from conversation context — always call a tool. "
