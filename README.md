@@ -287,32 +287,148 @@ leave-management/
 
 ---
 
-## 🧠 Architecture Overview
+## 🧠 Architecture Overview — Explained Simply
+
+Think of this system like a **smart restaurant**:
+
+| Real-world | In this system |
+|------------|----------------|
+| 🍽️ Customer | **Employee** (wants leave) |
+| 📋 Waiter | **Manager** (approves/rejects) |
+| 🏪 Restaurant Manager | **HR** (manages everything) |
+| 🤖 Smart Assistant Bot | **AI Agents** (chat helpers) |
+| 📁 Order Notebook | **Database** (stores all data) |
+| 🔑 Door Lock | **JWT Auth** (keeps data secure) |
+
+### 📐 System Diagram
 
 ```
-User → React/Static Frontend → FastAPI :8000
-  │
-  ├── /api/chat → LangGraph StateGraph
-  │   └── Supervisor Agent (LLM intent classifier)
-  │       ├── → Leave Agent (apply/cancel leaves)
-  │       ├── → Approval Agent (approve/reject)
-  │       ├── → Policy Agent (policy questions)
-  │       ├── → Analytics Agent (stats & reports)
-  │       └── → General Agent (fallback)
-  │
-  └── /api/* → REST endpoints (CRUD operations)
-       └── SQLAlchemy → SQLite Database
+┌─────────────────────────────────────────────────────────────────────┐
+│                        YOUR WEB BROWSER                            │
+│                                                                     │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐            │
+│   │  👨‍💼 Employee  │  │  👔 Manager   │  │  🧑‍💼 HR Admin  │            │
+│   │   Dashboard   │  │   Dashboard   │  │   Dashboard   │            │
+│   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘            │
+│          │                 │                 │                      │
+│          └─────────────────┴─────────────────┘                      │
+│                              │                                      │
+│                     ┌────────┴────────┐                            │
+│                     │  Chat Window 🤖  │  ← AI chat in every portal│
+│                     └────────┬────────┘                            │
+└────────────────────────────────┼────────────────────────────────────┘
+                                 │ (Internet)
+┌────────────────────────────────┼────────────────────────────────────┐
+│                    FASTAPI SERVER (Python)                          │
+│                                 │                                   │
+│          ┌──────────────────────┼──────────────────────┐           │
+│          │                      │                      │           │
+│          ▼                      ▼                      ▼           │
+│  ┌──────────────┐     ┌──────────────────┐     ┌──────────────┐   │
+│  │  REST APIs   │     │  AI AGENT SYSTEM │     │   STATIC      │   │
+│  │  (Endpoints) │     │   (LangGraph)    │     │   FILES      │   │
+│  │              │     │                  │     │   (HTML/JS)  │   │
+│  │  • Apply     │     │  ┌────────────┐  │     └──────────────┘   │
+│  │    leave     │     │  │ SUPERVISOR │  │                         │
+│  │  • Approve   │     │  │   AGENT    │  │                         │
+│  │  • Cancel    │     │  │  (Decides  │  │                         │
+│  │  • View      │     │  │   who to   │  │                         │
+│  │    balance   │     │  │   handle)  │  │                         │
+│  │  • Create    │     │  └─────┬──────┘  │                         │
+│  │    employee  │     │        │         │                         │
+│  │  • Notify    │     │        ▼         │                         │
+│  │              │     │  ┌────────────┐  │                         │
+│  │              │     │  │  SPECIALIST│  │                         │
+│  │              │     │  │   AGENTS   │  │                         │
+│  │              │     │  │            │  │                         │
+│  │              │     │  │ • Leave 📝 │  │                         │
+│  │              │     │  │ • Approve ✅│  │                         │
+│  │              │     │  │ • Policy 📋 │  │                         │
+│  │              │     │  │ • Analytics│  │                         │
+│  │              │     │  │ • General 💬│  │                         │
+│  │              │     │  └────────────┘  │                         │
+│  └──────┬───────┘     └──────────────────┘                         │
+│         │                                                           │
+│         ▼                                                           │
+│  ┌────────────────────────────────────────────────────────────┐    │
+│  │                    DATABASE (SQLite)                       │    │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────┐  │    │
+│  │  │Employees │ │  Leaves  │ │ Notifica-│ │   Holidays   │  │    │
+│  │  │ (Users)  │ │ (Records)│ │  tions   │ │   (Off days) │  │    │
+│  │  └──────────┘ └──────────┘ └──────────┘ └──────────────┘  │    │
+│  └────────────────────────────────────────────────────────────┘    │
+└────────────────────────────────────────────────────────────────────┘
 ```
 
-### AI Workflow
+### 🔄 How Data Flows (Step by Step)
+
+**Example: An employee applies for leave**
 
 ```
-1. Employee sends message in chat
-2. Supervisor Agent classifies intent via GPT-4o-mini
-3. Routes to appropriate Specialist Agent
-4. Agent calls database tools (SQLAlchemy)
-5. Returns natural language response
+Step 1: Employee opens browser → goes to Employee Portal
+Step 2: Logs in with email + password → Server gives a "token" (like a wristband)
+Step 3: Clicks "Apply Leave" → fills form (type, dates, reason) → clicks Submit
+Step 4: FastAPI receives the request at /api/leaves/apply
+Step 5: System checks:
+        ├── Is the employee logged in? (checks the token)
+        ├── Is the date valid? (not >70 days in future/past)
+        ├── Is the leave type within limits? (e.g., casual ≤2/month)
+        └── Does it need manager approval? (project tag? 3rd request?)
+Step 6: If auto-approved → leave is saved in database → "Approved!" shown
+Step 7: If needs manager → leave is saved as "Pending" → Manager sees it
+Step 8: Notification created → 🔔 bell icon lights up for manager
 ```
+
+**Example: Employee asks AI Chat "What is my leave balance?"**
+
+```
+Step 1: Employee types question in chat box
+Step 2: Chat sends message to /api/chat endpoint
+Step 3: SUPERVISOR AGENT reads the question
+Step 4: Supervisor decides: "This is a balance question → send to Leave Agent"
+Step 5: LEAVE AGENT calls a database tool → fetches leave balance
+Step 6: Agent formats the answer in plain English
+Step 7: Response sent back to chat → "You have 12 casual leaves remaining..."
+```
+
+### 🤖 How the AI Works (For Non-Technical Readers)
+
+**What is an "AI Agent"?** — Think of it as a very smart assistant that has:
+1. **A Brain** — OpenAI GPT-4o-mini (a large language model that understands text)
+2. **Hands** — Tools/functions it can use (like `get_leave_balance`, `apply_leave`)
+3. **Rules** — A prompt that tells it what to do and what NOT to do
+
+**The Supervisor Agent** is like a **receptionist**:
+- Listens to your question
+- Decides which department (specialist agent) should handle it
+- Passes the message along
+
+**The Specialist Agents** are like **department heads**:
+
+| Agent | Job | Example Question |
+|-------|-----|-----------------|
+| 📝 **Leave Agent** | Handle leave applications & cancellations | "Apply for casual leave tomorrow" |
+| ✅ **Approval Agent** | Approve or reject pending leaves | "Approve John's sick leave" |
+| 📋 **Policy Agent** | Explain company leave rules | "What is the leave policy?" |
+| 📊 **Analytics Agent** | Answer questions about data | "How many leaves approved today?" |
+| 💬 **General Agent** | Chat about anything else | "Hello, what can you do?" |
+
+**What is LangGraph?** — It's a framework that lets us connect these agents together in a workflow, like connecting pipes. The Supervisor feeds into specialists, specialists can call tools, and results flow back.
+
+**What is GPT-4o-mini?** — It's OpenAI's small, fast, cheap AI model. It reads text and decides what to do. It doesn't store your data — each question is processed independently.
+
+**Does it learn from my data?** — No. OpenAI does NOT train on API calls. Your data stays private.
+
+### 🗄️ How the Database Works
+
+We use **SQLite** — a simple database saved as a single file (`leave_management.db`):
+
+| Table | Stores | Example Row |
+|-------|--------|-------------|
+| `employees` | User accounts | EMP001, John Doe, john@email.com |
+| `leave_records` | Leave applications | EMP001, Casual, 2026-07-10, Approved |
+| `notifications` | Alerts & messages | "Your leave was approved!" |
+| `holidays` | Company holidays | 2026-01-26, Republic Day |
 
 ---
 
