@@ -30,6 +30,17 @@ pinned: false
 
 ## 👋 For Visitors — How to Use This Project
 
+**Jump to:**
+- [🌐 Visit Live Demo (no install)](#-option-1-visit-the-live-demo-no-installation)
+- [💻 Run Locally on Your Computer](#-option-2-run-locally-on-your-computer)
+  - [Step 1: Install required software](#step-1-install-the-required-software)
+  - [Step 2: Download the code](#step-2-download-the-code-clone-the-repository)
+  - [Step 3: Set up environment variables](#step-3-set-up-environment-variables)
+  - [Step 4: Start the system](#step-4-start-the-system)
+  - [Step 5: Open in browser](#step-5-open-in-your-browser)
+  - [Troubleshooting](#%EF%B8%8F-troubleshooting)
+- [🔧 Integrate into your own project](#-option-3-integrate-into-your-own-project)
+
 ---
 
 ### 🌐 Option 1: Visit the Live Demo (No Installation)
@@ -87,74 +98,162 @@ Choose a portal below, open the URL in your browser, and follow the steps:
 
 ---
 
-### 💻 Option 2: Run Locally on Your Computer
+### 💻 Option 2: Run Locally on Your Computer [↑](#readme)
 
-Follow these steps to get the project running on your own machine:
+Follow these steps even if you've never used a terminal before. Each step tells you **exactly** what to type and why.
 
-#### Step 1: Install Prerequisites
+---
 
-| Required | Version | Download |
-|----------|---------|----------|
-| Python | 3.12 or higher | [python.org/downloads](https://python.org/downloads) |
-| Git | Latest | [git-scm.com/downloads](https://git-scm.com/downloads) |
-| OpenAI API Key | - | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
+#### Step 1: Install the Required Software [↑](#step-1-install-the-required-software)
 
-> **No OpenAI key?** The system will still work for basic operations (apply leaves, approve, etc.), but the AI Chat feature won't function.
+Before you can run this project, your computer needs 3 things:
 
-#### Step 2: Clone the Repository
+| Software | What it is | Where to get it | How to check if you already have it |
+|----------|-----------|-----------------|--------------------------------------|
+| **Python** | The programming language this project runs on | [Download Python 3.12+](https://www.python.org/downloads/) | Open Terminal/Command Prompt → type `python --version` |
+| **Git** | Downloads code from GitHub | [Download Git](https://git-scm.com/downloads) | Open Terminal → type `git --version` |
+| **OpenAI API Key** | A secret key to use the AI chat feature | [Get your key here](https://platform.openai.com/api-keys) → Click "Create new secret key" | You'll copy this key into a file later |
+
+> **📌 Don't have Python?** [Watch this 2-min video](https://www.youtube.com/watch?v=uDbDIwRpNdo) on installing Python.
+>
+> **📌 No OpenAI key?** No problem! The system still works — you can apply leaves, approve requests, manage employees. Only the AI Chat feature won't work.
+
+---
+
+#### Step 2: Download the Code (Clone the Repository) [↑](#step-2-download-the-code-clone-the-repository)
+
+1. Open **Terminal** (Mac/Linux) or **Command Prompt** (Windows)
+2. Type these commands one by one, pressing **Enter** after each:
 
 ```bash
+# This downloads the entire project to your computer
 git clone https://github.com/vikasotageri/leave-management.git
+
+# This moves you into the project folder
 cd leave-management
 ```
 
-#### Step 3: Set Up Environment Variables
+**What just happened?** You now have a folder called `leave-management` on your computer with all the code inside.
+
+> **📌 Stuck?** If `git` is not found, [install Git](https://git-scm.com/downloads) and restart Terminal.
+
+---
+
+#### Step 3: Set Up Environment Variables [↑](#step-3-set-up-environment-variables)
+
+This is where you add your secret keys so the project can run.
+
+##### 3a. Create the `.env` file
 
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-Now open `backend/.env` in any text editor and add your keys:
+This copies the example file into a real `.env` file.
+
+##### 3b. Open the file in a text editor
+
+Choose one of these methods:
+
+| Your Skill Level | Do This |
+|----------------|---------|
+| **Beginner** | Open the `leave-management` folder → open `backend` folder → double-click `.env` file (it will open in Notepad/TextEdit) |
+| **Terminal user** | Run: `nano backend/.env` or `code backend/.env` |
+
+##### 3c. Edit the file — replace the placeholder text
+
+Find these lines in the file and change them:
 
 ```
 OPENAI_API_KEY=sk-your-openai-api-key-here
 SECRET_KEY=any-random-string-for-jwt
-SMTP_USER=your-email@gmail.com      # Optional: for sending emails
-SMTP_PASS=your-gmail-app-password   # Optional: for sending emails
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-gmail-app-password
 ```
 
-> **What is SECRET_KEY?** Any random string (e.g. `mysecret123`). It's used to encrypt login tokens.
+**What to put where:**
 
-#### Step 4: Start the System
+| Variable | What to type | Example | Required? |
+|----------|-------------|---------|-----------|
+| `OPENAI_API_KEY` | Your OpenAI key (starts with `sk-...`) | `sk-proj-AbCdEfGhIjKlMnOpQrStUvWxYz123456` | ✅ Yes for AI chat |
+| `SECRET_KEY` | **Any random text you make up** | `mySuperSecretKey123!@#` | ✅ Yes |
+| `SMTP_USER` | Your Gmail address | `you@gmail.com` | ❌ Skip unless you need emails |
+| `SMTP_PASS` | Your Gmail app password | `abcd efgh ijkl mnop` | ❌ Skip unless you need emails |
+
+> **❓ What is SECRET_KEY?** It's like a password that your computer uses to create login tokens. Make up anything — `abc123`, `mysecret`, `hjsdhfjshdf` — it doesn't matter as long as it's not empty.
+>
+> **❓ What about SMTP?** These are for sending emails (e.g. welcome emails to new employees). You only need them if you want email features. [How to get Gmail app password](https://support.google.com/accounts/answer/185833).
+
+**Save the file** (Ctrl+S in most editors) and close it.
+
+---
+
+#### Step 4: Start the System [↑](#step-4-start-the-system)
+
+Now run this single command:
 
 ```bash
 bash start.sh
 ```
 
-This command will:
-- ✅ Install all Python dependencies (FastAPI, LangGraph, OpenAI, etc.)
-- ✅ Create the SQLite database
-- ✅ Seed HR and Manager demo accounts
-- ✅ Start all 3 portal servers
+Then **wait**. The first time takes 1-2 minutes because it downloads all dependencies.
 
-#### Step 5: Open in Browser
+**What this command does (in simple words):**
+1. 📥 Downloads all required Python packages (like downloading apps from an app store)
+2. 🗄️ Creates a small database file on your computer
+3. 👤 Creates demo accounts (HR and Manager) so you can log in
+4. 🚀 Starts 3 mini-servers on your computer — one for each portal
 
-| Portal | URL |
-|--------|-----|
-| Employee | [http://localhost:8001/employee](http://localhost:8001/employee) |
-| Manager | [http://localhost:8002/manager](http://localhost:8002/manager) |
-| HR | [http://localhost:8003/hr](http://localhost:8003/hr) |
+**You'll know it's done when you see:**
 
-Login with the same demo credentials from Option 1.
+```
+✅ All servers started!
 
-#### Troubleshooting
+  Role       | Dashboard                           | Port
+  -----------|-------------------------------------|------
+  Employee   | http://localhost:8001/employee      | 8001
+  Manager    | http://localhost:8002/manager        | 8002
+  HR         | http://localhost:8003/hr             | 8003
+```
 
-| Problem | Solution |
-|---------|----------|
-| `Command not found: pip` | Install Python from python.org, check "Add to PATH" |
-| `Port 8001 already in use` | Kill existing process: `kill $(lsof -ti:8001)` |
-| AI Chat not responding | Check your `OPENAI_API_KEY` in `.env` is correct |
-| Database errors | Delete `backend/leave_management.db` and restart |
+> **❓ Something went wrong?** See the Troubleshooting table below.
+
+---
+
+#### Step 5: Open in Your Browser [↑](#step-5-open-in-your-browser)
+
+1. Open **Chrome, Firefox, or Edge**
+2. Click one of these links:
+
+| Portal | URL | What to do there |
+|--------|-----|-----------------|
+| 👨‍💼 **Employee** | [http://localhost:8001/employee](http://localhost:8001/employee) | Apply for leaves, check balance, chat with AI |
+| 👔 **Manager** | [http://localhost:8002/manager](http://localhost:8002/manager) | Approve/reject leaves, manage team |
+| 🧑‍💼 **HR** | [http://localhost:8003/hr](http://localhost:8003/hr) | Create/manage employees |
+
+Login with these demo accounts:
+
+| Portal | Email | Password |
+|--------|-------|----------|
+| HR | `hr@company.com` | `pass123` |
+| Manager | `manager@company.com` | `pass123` |
+
+> **📌 Can't click the links?** Type `http://localhost:8001/employee` directly into your browser's address bar.
+
+---
+
+#### 🛠️ Troubleshooting [↑](#%EF%B8%8F-troubleshooting)
+
+| Problem | What it means | How to fix |
+|---------|--------------|------------|
+| `'python' is not recognized` | Python is not installed | [Download Python](https://www.python.org/downloads/) — during install, CHECK the box "Add Python to PATH" |
+| `pip: command not found` | Python's package installer is missing | Reinstall Python with "Add to PATH" checked |
+| `Port 8001 already in use` | Another program is using port 8001 | Run: `kill $(lsof -ti:8001)` (Mac/Linux) or restart your computer (Windows) |
+| AI Chat says "Error" | OpenAI key is missing or wrong | Double-check `OPENAI_API_KEY` in `backend/.env` file |
+| `ModuleNotFoundError` | A package didn't install | Run: `pip install -r requirements.txt` manually |
+| Database errors | Database file is corrupted | Delete `backend/leave_management.db` and run `bash start.sh` again |
+| Can't open the links | Server hasn't started yet | Wait for the "✅ All servers started!" message |
+| Forgot where `.env` is | Navigate to `leave-management/backend/.env` | Open the `leave-management` folder → `backend` folder → `.env` file |
 
 ---
 
