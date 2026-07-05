@@ -1,0 +1,5 @@
+# Make GitHub Linguist recognize Python as the primary language
+react/* linguist-vendored
+react/**/* linguist-vendored
+package.json linguist-vendored
+package-lock.json linguist-vendored
