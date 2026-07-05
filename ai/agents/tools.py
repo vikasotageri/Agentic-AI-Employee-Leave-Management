@@ -1608,8 +1608,8 @@ def get_leave_policy():
         "family": "Max 10/year (no carry forward). Always manager approval. No auto-approval. No negative balance.",
         "unpaid": "No limit. Apply when all other leave types are exhausted. Always manager approval. No balance required.",
         "project_tag": "Tagged employees → ALL leaves require manager approval (no auto-approval).",
-        "cancellation": "Pending leaves can be cancelled (removed from history). Approved leaves create cancellation request for manager.",
-        "advance_booking": "Up to 2 months in advance.",
+        "cancellation": "Pending leaves can be cancelled (removed from history). Approved leaves older than 70 days CANNOT be cancelled. Only approved leaves within the 70-day window can be cancelled (creates cancellation request for manager).",
+        "advance_booking": "Cannot apply more than 70 days in advance. Cannot apply for dates more than 70 days in the past.",
     }
 
 
