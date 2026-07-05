@@ -26,13 +26,18 @@ async function loadManagerDashboard(isRefresh) {
     const totalPending = (pendingReqs || []).length
     const totalCancellations = (cancels || []).length
 
-    // Stats cards
+    // Stats cards — incremental update during refresh to avoid flicker
     const stats = document.getElementById('mgrStatsCards')
-    stats.innerHTML = [
-      { label: 'Total Team Members', value: emps.length, color: 'bg-blue-50 text-blue-700', icon: '👥' },
-      { label: 'Pending Requests', value: totalPending, color: 'bg-yellow-50 text-yellow-700', icon: '⏳' },
-      { label: 'Cancellation Req', value: totalCancellations, color: 'bg-blue-50 text-blue-700', icon: '🔶' },
-    ].map(s => `<div class="${s.color} rounded-xl p-4 border"><p class="text-xs opacity-70">${s.icon} ${s.label}</p><p class="text-2xl font-bold mt-1">${s.value}</p></div>`).join('')
+    if (isRefresh) {
+      const vals = [emps.length, totalPending, totalCancellations]
+      stats.querySelectorAll('.stat-value').forEach((el, i) => { if (i < vals.length) el.textContent = String(vals[i]) })
+    } else {
+      stats.innerHTML = [
+        { label: 'Total Team Members', value: emps.length, color: 'bg-blue-50 text-blue-700', icon: '👥' },
+        { label: 'Pending Requests', value: totalPending, color: 'bg-yellow-50 text-yellow-700', icon: '⏳' },
+        { label: 'Cancellation Req', value: totalCancellations, color: 'bg-blue-50 text-blue-700', icon: '🔶' },
+      ].map(s => `<div class="${s.color} rounded-xl p-4 border"><p class="text-xs opacity-70">${s.icon} ${s.label}</p><p class="text-2xl font-bold mt-1 stat-value">${s.value}</p></div>`).join('')
+    }
 
     // Team member cards - skip full re-render during auto-refresh to prevent flicker
     const container = document.getElementById('teamMemberList')
@@ -84,15 +89,23 @@ async function loadManagerDashboard(isRefresh) {
 
     // Employee select for approvals tab
     const sel = document.getElementById('mgrEmployeeSelect')
-    sel.innerHTML = '<option value="">Select team member...</option>' + emps.map(e => `<option value="${e.id}">${e.name} (${e.id})</option>`).join('')
+    if (!isRefresh) {
+      sel.innerHTML = '<option value="">Select team member...</option>' + emps.map(e => `<option value="${e.id}">${e.name} (${e.id})</option>`).join('')
+    }
 
-    // Refresh notification bell
+    // Refresh notification bell — only update badge count text during refresh
     if (window._mgrPendingCounts && window.initNavbar) {
       const totalP = Object.values(window._mgrPendingCounts).reduce((a, b) => a + b, 0)
       const bell = document.getElementById('notificationBell')
       if (bell) {
-        bell.innerHTML = '🔔' + (totalP > 0 ? `<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">${totalP}</span>` : '')
-        bell.title = totalP + ' pending'
+        if (isRefresh) {
+          const badge = bell.querySelector('.notif-badge-count')
+          if (badge) badge.textContent = String(totalP)
+          bell.title = totalP + ' pending'
+        } else {
+          bell.innerHTML = '🔔' + (totalP > 0 ? `<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold notif-badge-count">${totalP}</span>` : '')
+          bell.title = totalP + ' pending'
+        }
       }
     }
   } catch (e) { console.error('Mgr dash error:', e) }
