@@ -135,6 +135,16 @@ Open any portal below in your browser. No setup required.
 
 ---
 
+## 📸 Screenshots
+
+| Portal | Preview |
+|--------|---------|
+| 👨‍💼 **Employee Dashboard** | ![Employee Portal](screenshots/employee.png) |
+| 👔 **Manager Dashboard** | ![Manager Portal](screenshots/manager.png) |
+| 🧑‍💼 **HR Dashboard** | ![HR Portal](screenshots/hr.png) |
+
+---
+
 ## 🤖 AI Chat — How It Works & What to Try
 
 The **AI Chat** (available in Employee & Manager portals) is the heart of this Agentic AI project. It uses **OpenAI GPT-4o-mini** routed through **LangGraph agents** — no hardcoded if-else, no button clicks needed.
@@ -625,6 +635,11 @@ leave-management/
 ├── docs/                            # Documentation
 │   ├── AGENTS.md
 │   └── README.md
+│
+├── screenshots/                       # Portal screenshots
+│   ├── employee.png
+│   ├── manager.png
+│   └── hr.png
 │
 ├── Dockerfile                       # For Hugging Face Spaces
 ├── start.sh                         # One-command launcher
