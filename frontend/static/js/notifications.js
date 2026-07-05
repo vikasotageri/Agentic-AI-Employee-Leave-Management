@@ -82,7 +82,7 @@ function initNavbar(){
   const nav=document.getElementById('navbar')
   const navLinks=document.getElementById('navLinks')
   const userDisplay=document.getElementById('userDisplay')
-  if(!u||!nav){document.title='Login - AI Solution Ltd';return}
+  if(!u||!nav){document.title='Login - MSIS';return}
   nav.classList.remove('hidden')
   const links={
     hr:[],
@@ -97,7 +97,7 @@ function initNavbar(){
     const title=seniorTitles[u.role]
     userDisplay.textContent=title?u.name+' - '+title:u.name
   }
-  document.title=u.role.charAt(0).toUpperCase()+u.role.slice(1)+' - AI Solution Ltd'
+  document.title=u.role.charAt(0).toUpperCase()+u.role.slice(1)+' - MSIS'
   loadNotifications()
   if(u.role==='hr'&&window.location.pathname==='/hr') loadEmployeeList()
 }

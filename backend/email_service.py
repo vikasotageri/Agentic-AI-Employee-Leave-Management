@@ -37,13 +37,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SMTP_EMAIL = os.getenv("SMTP_EMAIL", "")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_EMAIL = os.getenv("SMTP_USER", "")
+SMTP_PASSWORD = os.getenv("SMTP_PASS", "")
+EMAIL_FROM = os.getenv("EMAIL_FROM", SMTP_EMAIL)
 
 
 def send_email(to_email: str, subject: str, body: str):
     """
-    Send an HTML email via Gmail SMTP.
+    Send an HTML email via SMTP.
 
     Args:
       to_email: Recipient email address
@@ -52,12 +55,12 @@ def send_email(to_email: str, subject: str, body: str):
 
     FLOW:
       1. Build MIME message with HTML content
-      2. Connect to smtp.gmail.com:465 over SSL
-      3. Login with SMTP_EMAIL / SMTP_PASSWORD
+      2. Connect to SMTP server
+      3. Login with credentials
       4. Send message
       5. Close connection
 
-    If SMTP_EMAIL is not configured, prints to console instead (dev mode).
+    If SMTP_USER is not configured, prints to console instead (dev mode).
     """
     if not SMTP_EMAIL or not SMTP_PASSWORD:
         print(f"📧 [DEV] Email to {to_email}: {subject}")
@@ -65,13 +68,17 @@ def send_email(to_email: str, subject: str, body: str):
         return
 
     msg = MIMEMultipart("alternative")
-    msg["From"] = SMTP_EMAIL
+    msg["From"] = EMAIL_FROM
     msg["To"] = to_email
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "html"))
 
     try:
-        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        if SMTP_PORT == 465:
+            server = smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT)
+        else:
+            server = smtplib.SMTP(SMTP_HOST, SMTP_PORT)
+            server.starttls()
         server.login(SMTP_EMAIL, SMTP_PASSWORD)
         server.send_message(msg)
         server.quit()

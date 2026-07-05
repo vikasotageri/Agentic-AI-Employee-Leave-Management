@@ -267,7 +267,7 @@ def create_employee(req: CreateEmployeeRequest, db: Session = Depends(get_db), u
     db.add(emp)
     db.add(Notification(
         user_id=new_id,
-        title="Welcome to LeaveFlow!",
+        title="Welcome to MSIS!",
         message=f"Account created. ID: {new_id}, Email: {req.email}, Password: {password}, DOJ: {req.doj}",
         type="account_created",
     ))
@@ -289,9 +289,9 @@ def create_employee(req: CreateEmployeeRequest, db: Session = Depends(get_db), u
     import threading
     threading.Thread(target=send_email, args=(
         req.email,
-        "Welcome to LeaveFlow - Your Account Credentials",
+        "AI MSIS - Your Account Credentials",
         f"""<div style='font-family:sans-serif;padding:24px;max-width:500px'>
-<h2 style='color:#2563eb'>Welcome to LeaveFlow! 🎉</h2>
+<h2 style='color:#2563eb'>Welcome to AI MSIS! 🎉</h2>
 <p>Hi {full_name},</p>
 <p>Your employee account has been created. Here are your login credentials:</p>
 <table style='width:100%;border-collapse:collapse;margin:16px 0'>
@@ -302,8 +302,8 @@ def create_employee(req: CreateEmployeeRequest, db: Session = Depends(get_db), u
 <tr><td style='padding:8px;border:1px solid #e5e7eb;font-weight:600;color:#374151'>Gender</td><td style='padding:8px;border:1px solid #e5e7eb'>{req.gender or "—"}</td></tr>
 <tr><td style='padding:8px;border:1px solid #e5e7eb;font-weight:600;color:#374151'>Project Tag</td><td style='padding:8px;border:1px solid #e5e7eb'>{req.project_tag or "—"}</td></tr>
 </table>
-<p>Login at <a href='http://localhost:8000/login' style='color:#2563eb'>http://localhost:8000/login</a> and start managing your leaves.</p>
-<p style='color:#6b7280;font-size:12px;margin-top:20px'>This is an automated message from LeaveFlow.</p>
+<p>Login at <a href='/employee/login' style='color:#2563eb'>Employee Portal</a> and start managing your leaves.</p>
+<p style='color:#6b7280;font-size:12px;margin-top:20px'>This is an automated message from AI MSIS.</p>
 </div>""",
     ), daemon=True).start()
 
@@ -413,6 +413,35 @@ def update_document(employee_id: str, req: UpdateDocumentRequest, db: Session = 
     emp.document = req.document
     db.commit()
     return {"success": True, "hasDocument": bool(req.document)}
+
+
+@router.post("/{employee_id}/resend-credentials")
+def resend_credentials(employee_id: str, db: Session = Depends(get_db), user: Employee = Depends(get_current_user)):
+    """Resend login credentials email to employee (HR only)."""
+    if user.role != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can resend credentials")
+    emp = db.query(Employee).filter(Employee.id == employee_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    import threading
+    threading.Thread(target=send_email, args=(
+        emp.email,
+        "AI MSIS - Login Credentials",
+        f"""<div style='font-family:sans-serif;padding:24px;max-width:500px'>
+<h2 style='color:#2563eb'>AI MSIS Login Credentials 🔑</h2>
+<p>Hi {emp.name},</p>
+<p>Here are your login credentials as requested:</p>
+<table style='width:100%;border-collapse:collapse;margin:16px 0'>
+<tr><td style='padding:8px;border:1px solid #e5e7eb;font-weight:600;color:#374151'>Employee ID</td><td style='padding:8px;border:1px solid #e5e7eb;color:#2563eb;font-family:monospace'>{emp.id}</td></tr>
+<tr><td style='padding:8px;border:1px solid #e5e7eb;font-weight:600;color:#374151'>Email</td><td style='padding:8px;border:1px solid #e5e7eb'>{emp.email}</td></tr>
+<tr><td style='padding:8px;border:1px solid #e5e7eb;font-weight:600;color:#374151'>Password</td><td style='padding:8px;border:1px solid #e5e7eb;font-family:monospace;font-weight:bold;color:#d97706'>{emp.plain_password or emp.password}</td></tr>
+<tr><td style='padding:8px;border:1px solid #e5e7eb;font-weight:600;color:#374151'>Role</td><td style='padding:8px;border:1px solid #e5e7eb;text-transform:capitalize'>{emp.role}</td></tr>
+</table>
+<p>Login at <a href='/employee/login' style='color:#2563eb'>Employee Portal</a></p>
+<p style='color:#6b7280;font-size:12px;margin-top:20px'>This is an automated message from AI MSIS.</p>
+</div>""",
+    ), daemon=True).start()
+    return {"success": True, "message": f"Credentials resent to {emp.email}"}
 
 
 class ProjectTagRequest(BaseModel):

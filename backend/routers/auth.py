@@ -99,7 +99,7 @@ def forgot_password(req: ForgotPasswordRequest, background_tasks: BackgroundTask
     db.commit()
 
     html = f"""
-    <h2>Password Reset - LeaveFlow</h2>
+    <h2>Password Reset - AI MSIS</h2>
     <p>Dear {emp.name},</p>
     <p>Your password has been reset as requested.</p>
     <p><b>New Password:</b> {new_pass}</p>
@@ -110,9 +110,9 @@ def forgot_password(req: ForgotPasswordRequest, background_tasks: BackgroundTask
     <p>Date of Joining: <b>{emp.doj}</b></p>
     <hr>
     <p>Please log in and change your password.</p>
-    <p>Regards,<br>LeaveFlow Team</p>
+    <p>Regards,<br>AI MSIS Team</p>
     """
-    background_tasks.add_task(send_email, emp.email, "LeaveFlow - Password Reset", html)
+    background_tasks.add_task(send_email, emp.email, "MSIS - Password Reset", html)
 
     return {"success": True, "message": "New password sent to your email"}
 

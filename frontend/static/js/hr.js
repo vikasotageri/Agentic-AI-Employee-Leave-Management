@@ -124,7 +124,10 @@ window.selectEmployee=async function(id){
       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-6">
         <div class="flex items-center justify-between mb-3">
           <h3 class="font-semibold text-gray-700">🔑 Credentials</h3>
-          <button onclick="copyProfileCredentials('${emp.id}')" class="text-xs px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 font-medium transition" id="copyCredBtn${emp.id}">📋 Copy Credentials</button>
+          <div class="flex items-center gap-2">
+            <button onclick="resendCredentials('${emp.id}')" class="text-xs px-4 py-1.5 bg-green-100 text-green-700 rounded-full hover:bg-green-200 font-medium transition" id="resendCredBtn${emp.id}">📧 Resend Credentials</button>
+            <button onclick="copyProfileCredentials('${emp.id}')" class="text-xs px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 font-medium transition" id="copyCredBtn${emp.id}">📋 Copy Credentials</button>
+          </div>
         </div>
         <div class="grid grid-cols-3 gap-3" id="empCredSection">
           <div class="p-3 bg-white rounded-xl border border-gray-200"><p class="text-xs text-gray-500">Employee ID</p><p class="font-bold text-blue-600 mt-0.5">${emp.id}</p></div>
@@ -243,6 +246,18 @@ window.replaceDocument=function(id){
     }catch(e){alert('Error: '+e.message)}
   }
   input.click()
+}
+
+window.resendCredentials=async function(id){
+  const btn=document.getElementById('resendCredBtn'+id)
+  if(btn){btn.textContent='⏳ Sending...';btn.disabled=true}
+  try{
+    const r=await apiPost('/employees/'+id+'/resend-credentials',{})
+    if(btn){btn.textContent='✅ Sent!';setTimeout(()=>{btn.textContent='📧 Resend Credentials';btn.disabled=false},3000)}
+  }catch(e){
+    if(btn){btn.textContent='❌ Failed';setTimeout(()=>{btn.textContent='📧 Resend Credentials';btn.disabled=false},3000)}
+    alert('Failed to resend: '+e.message)
+  }
 }
 
 window.copyProfileCredentials=async function(id){

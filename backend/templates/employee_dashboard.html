@@ -29,17 +29,81 @@
     <div id="leaveBalanceCards" class="grid grid-cols-5 gap-4 mb-6"></div>
 
     <!-- Leave Policy Quick Info -->
-    <details class="bg-blue-50 rounded-2xl p-4 border border-blue-100">
-      <summary class="text-sm font-semibold text-blue-700 cursor-pointer">📋 Leave Policy Rules</summary>
-      <div class="mt-3 text-xs text-gray-600 space-y-2">
-        <p><b>Casual Leave (Max 24/year, 2/month from DOJ, carried forward):</b> First 2 requests/month auto-approved (max 2 days at a time). 3rd+ or >2 days → manager approval. No negative balance.</p>
-        <p><b>Sick Leave (Max 12/year, no carry forward):</b> First 1 request/month auto-approved (max 1 day at a time). 2nd+ or >1 day → manager. No negative balance.</p>
-        <p><b>Business Leave (Max 20/year, no carry forward):</b> Always manager approval. No auto-approval. No negative balance.</p>
-        <p><b>Emergency/Personal (Max 10/year, no carry forward):</b> First 1 request/month auto-approved (max 1 day at a time). 2nd+ or >1 day → manager. No negative balance.</p>
-        <p><b>Family/Vacation (Max 10/year, no carry forward):</b> Always manager approval. No auto-approval. No negative balance.</p>
-        <p><b>Unpaid Leave (No limit):</b> Apply only when all other leave types exhausted. Always manager approval. No balance required.</p>
-        <p><b>Project Tag:</b> If you have a project tag, ALL leaves need manager approval (no auto-approval).</p>
-        <p><b>Paid Leave:</b> When all leave types exhausted, applies as paid leave. Manager approval required.</p>
+    <details class="bg-blue-50 rounded-2xl p-4 border border-blue-100" open>
+      <summary class="text-sm font-semibold text-blue-700 cursor-pointer">📋 Leave Policy Rules — Full Details</summary>
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead>
+            <tr class="bg-blue-100 text-blue-800">
+              <th class="p-2 border border-blue-200 font-semibold whitespace-nowrap">Leave Type</th>
+              <th class="p-2 border border-blue-200 font-semibold whitespace-nowrap">Max / Year</th>
+              <th class="p-2 border border-blue-200 font-semibold whitespace-nowrap">Monthly Limit</th>
+              <th class="p-2 border border-blue-200 font-semibold whitespace-nowrap">Carry Forward</th>
+              <th class="p-2 border border-blue-200 font-semibold whitespace-nowrap">Auto-Approval Rule</th>
+              <th class="p-2 border border-blue-200 font-semibold whitespace-nowrap">Manager Approval Needed</th>
+              <th class="p-2 border border-blue-200 font-semibold whitespace-nowrap">Negative Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-white">
+              <td class="p-2 border border-blue-200 font-semibold">🏖️ Casual Leave</td>
+              <td class="p-2 border border-blue-200">24</td>
+              <td class="p-2 border border-blue-200">2/month (from DOJ)</td>
+              <td class="p-2 border border-blue-200">✅ Yes</td>
+              <td class="p-2 border border-blue-200">First 2 requests/month auto-approved (max 2 days each)</td>
+              <td class="p-2 border border-blue-200">3rd+ request or >2 days → Manager</td>
+              <td class="p-2 border border-blue-200 text-green-600">❌ Not allowed</td>
+            </tr>
+            <tr class="bg-blue-50/50">
+              <td class="p-2 border border-blue-200 font-semibold">🤒 Sick Leave</td>
+              <td class="p-2 border border-blue-200">12</td>
+              <td class="p-2 border border-blue-200">1/month</td>
+              <td class="p-2 border border-blue-200">❌ No</td>
+              <td class="p-2 border border-blue-200">First 1 request/month auto-approved (max 1 day)</td>
+              <td class="p-2 border border-blue-200">2nd+ request or >1 day → Manager</td>
+              <td class="p-2 border border-blue-200 text-green-600">❌ Not allowed</td>
+            </tr>
+            <tr class="bg-white">
+              <td class="p-2 border border-blue-200 font-semibold">🚨 Emergency / Personal</td>
+              <td class="p-2 border border-blue-200">10</td>
+              <td class="p-2 border border-blue-200">1/month</td>
+              <td class="p-2 border border-blue-200">❌ No</td>
+              <td class="p-2 border border-blue-200">First 1 request/month auto-approved (max 1 day)</td>
+              <td class="p-2 border border-blue-200">2nd+ request or >1 day → Manager</td>
+              <td class="p-2 border border-blue-200 text-green-600">❌ Not allowed</td>
+            </tr>
+            <tr class="bg-blue-50/50">
+              <td class="p-2 border border-blue-200 font-semibold">💼 Business Leave</td>
+              <td class="p-2 border border-blue-200">20</td>
+              <td class="p-2 border border-blue-200">—</td>
+              <td class="p-2 border border-blue-200">❌ No</td>
+              <td class="p-2 border border-blue-200 text-yellow-600">⚠️ No auto-approval</td>
+              <td class="p-2 border border-blue-200 font-medium text-orange-600">✅ Always (manager approval required)</td>
+              <td class="p-2 border border-blue-200 text-green-600">❌ Not allowed</td>
+            </tr>
+            <tr class="bg-white">
+              <td class="p-2 border border-blue-200 font-semibold">👨‍👩‍👧‍👦 Family / Vacation</td>
+              <td class="p-2 border border-blue-200">10</td>
+              <td class="p-2 border border-blue-200">—</td>
+              <td class="p-2 border border-blue-200">❌ No</td>
+              <td class="p-2 border border-blue-200 text-yellow-600">⚠️ No auto-approval</td>
+              <td class="p-2 border border-blue-200 font-medium text-orange-600">✅ Always (manager approval required)</td>
+              <td class="p-2 border border-blue-200 text-green-600">❌ Not allowed</td>
+            </tr>
+            <tr class="bg-blue-50/50">
+              <td class="p-2 border border-blue-200 font-semibold">🕊️ Unpaid Leave</td>
+              <td class="p-2 border border-blue-200">Unlimited</td>
+              <td class="p-2 border border-blue-200">—</td>
+              <td class="p-2 border border-blue-200">❌ No</td>
+              <td class="p-2 border border-blue-200 text-yellow-600">⚠️ No auto-approval (apply only when all paid leaves exhausted)</td>
+              <td class="p-2 border border-blue-200 font-medium text-orange-600">✅ Always (manager approval required)</td>
+              <td class="p-2 border border-blue-200 text-green-600">N/A (no limit)</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+          <b>📌 Project Tag Rule:</b> If you have a project tag assigned, <b>ALL leave types require manager approval</b> — auto-approval is disabled regardless of the rules above.
+        </div>
       </div>
     </details>
   </div>
@@ -190,7 +254,7 @@
 
 <div id="empChatPanel" class="fixed bottom-24 right-6 w-96 sm:w-[420px] bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 hidden flex flex-col max-h-[700px]">
   <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-t-2xl">
-    <span class="font-semibold text-sm">🤖 AI Assistant</span>
+    <span class="font-semibold text-sm">🤖 AI Assistance</span>
     <div class="flex items-center gap-2">
       <button onclick="clearEmpChat()" class="text-white/70 hover:text-white text-xs" title="Clear chat">🗑️</button>
       <button onclick="toggleEmpChat()" class="text-white/80 hover:text-white">&times;</button>
