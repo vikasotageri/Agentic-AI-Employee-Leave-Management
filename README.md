@@ -328,6 +328,111 @@ Think of this system like a **restaurant**:
 
 ---
 
+## 🎓 Purpose: Educational Project (Not Enterprise)
+
+> ⚠️ **This is a LEARNING project**, not a production-ready enterprise system.  
+> It is built to understand **how Agentic AI works** — how LLMs, prompts, tools, and agents work together.
+
+### What This Project Teaches You
+
+| Concept | How It's Demonstrated Here |
+|---------|---------------------------|
+| **🤖 Agentic AI** | Multiple AI agents (Supervisor + 5 Specialists) that make decisions autonomously |
+| **🧠 LLMs (Large Language Models)** | GPT-4o-mini reads user messages and decides what action to take — no if-else chains |
+| **📝 Prompt Engineering** | Each agent has a prompt that tells it what to do, what tools it has, and what NOT to do |
+| **🔧 AI Tools / Function Calling** | Agents don't guess — they call real database functions (`get_leave_balance`, `apply_leave`, etc.) |
+| **🔄 LangGraph Workflows** | Agents are connected in a graph — Supervisor → Specialist → Tool → Response |
+| **🚫 No Hardcoding** | The AI understands "Apply for casual leave tomorrow" without parsing keywords. A traditional system would need rigid forms |
+| **🔀 Multi-Agent Orchestration** | One supervisor delegates to specialists — like a manager delegating to teams |
+
+### ❌ What This Project Is NOT
+
+- ❌ **Not a replacement for SAP / Oracle / Workday** — those are enterprise-grade systems with 1000s of features
+- ❌ **Not security-audited** — no penetration testing, no SOC2, no GDPR compliance
+- ❌ **Not scalable** — SQLite (not PostgreSQL), single server (not load-balanced)
+- ❌ **Not for production data** — don't put real employee PII here
+
+### ✅ What This Project IS Good For
+
+- ✅ **Learning how AI agents work** — see the full flow: user message → LLM → tool call → response
+- ✅ **Understanding LangGraph** — trace how Supervisor routes to Specialists
+- ✅ **Experimenting with prompts** — tweak `graphs.py` prompts and see how AI behavior changes
+- ✅ **Testing LLM tool calling** — see how OpenAI's function calling integrates with Python
+- ✅ **Building your own agentic system** — use this as a template for your own ideas
+
+---
+
+## 💼 Business Scenarios — What AI Can Do vs Traditional Coding
+
+Below are real scenarios showing **why AI agents are powerful** compared to traditional hardcoded logic.
+
+### Scenario 1: Ambiguous Natural Language
+
+| 👤 User says | Traditional System | 🤖 AI Agent (This Project) |
+|-------------|-------------------|---------------------------|
+| *"I need day after tomorrow off"* | ❌ Would fail — needs exact date format | ✅ Understands "day after tomorrow" → computes date → applies leave |
+| *"Can I take Friday off?"* | ❌ Form only accepts dd-mm-yyyy | ✅ Understands "Friday" → finds next Friday → checks policy → applies |
+| *"What leaves do I have left?"* | ❌ Must navigate to specific page | ✅ Understands intent → fetches balance → responds in English |
+| *"Approve John's sick leave"* | ❌ Must find John in a list, click approve | ✅ Understands → finds John's pending sick leave → approves it |
+
+**Why this matters:** Traditional systems force users to follow rigid menus and forms. AI agents understand **how humans actually talk**.
+
+### Scenario 2: Multi-Step Reasoning
+
+| 👤 User says | 🤖 AI Agent does |
+|-------------|-----------------|
+| *"Apply for 3 days casual leave from next Monday"* | 1. Figures out next Monday's date<br>2. Checks if casual leave allows 3 days at once<br>3. Checks monthly limit (2/month)<br>4. If 1st/2nd request → auto-approves. If 3rd → routes to manager<br>5. Returns result in plain English |
+| *"Who's on leave this week?"* | 1. Determines current week dates<br>2. Queries all leaves in that range<br>3. Groups by employee<br>4. Returns: "John (casual, Mon-Wed), Sarah (sick, Tue)" |
+
+**Why this matters:** A traditional system would need separate pages/APIs for each step. The AI agent chains multiple tool calls together based on what the user needs.
+
+### Scenario 3: Policy Handling Without Hardcoding
+
+| Approach | How it works |
+|----------|-------------|
+| **Traditional code** | Rules are hardcoded: `if leave_type == "casual" and count > 2: requires_approval()` — changing policy means changing code, redeploying |
+| **AI Agent** | Policy is written in plain English in the prompt: *"First 2 casual requests/month auto-approved. 3rd+ → manager."* — changing policy means editing text, no code change |
+
+**Example:** If the company changes policy from "2 casual leaves/month" to "3 casual leaves/month":
+- **Traditional:** Find and update the if-condition in the code → re-deploy
+- **AI Agent:** Edit one sentence in the prompt → restart server
+
+### Scenario 4: Cross-Domain Questions
+
+| Question | What the AI does |
+|----------|-----------------|
+| *"How many leaves did I take this year?"* | Queries leave records, counts by type, sums up |
+| *"Show me everyone who joined this month"* | Filters employees by DOJ range |
+| *"Who has the most remaining casual leave?"* | Calculates all balances, sorts descending, returns top |
+| *"What's the policy on sick leave?"* | Reads policy prompt, explains in simple words |
+
+**Why this matters:** Each question would need a separate API endpoint in a traditional system. Here, one AI + tools handles infinite question types.
+
+### Scenario 5: Graceful Handling of Unknown Requests
+
+| User says | Traditional System | AI Agent |
+|-----------|-------------------|----------|
+| *"Tell me a joke"* | ❌ Error / 404 | ✅ "I'm a leave management assistant — I can help with leaves, policies, and reports!" |
+| *"What's the weather?"* | ❌ Error | ✅ "I don't have access to weather data. I can help with leave-related questions." |
+| *"Translate hello to French"* | ❌ Error | ✅ Tells user what it CAN do |
+
+**Why this matters:** Traditional systems crash or show errors on unexpected input. AI agents **know their boundaries** and guide users appropriately.
+
+---
+
+## 🔍 How Each Concept Maps to Code
+
+| Concept | File | What to Look At |
+|---------|------|----------------|
+| **Prompt Engineering** | `ai/agents/graphs.py` | Each agent's prompt (LEAVE_PROMPT, APPROVAL_PROMPT, etc.) — plain English instructions |
+| **Tool Definitions** | `ai/agents/tools.py` | Functions decorated with `@tool` — these are the "actions" agents can take |
+| **Tool Schemas** | `ai/agents/supervisor.py` | How tools are described to the LLM (name, description, parameters) |
+| **Agent Graph** | `ai/agents/graphs.py` | How agents connect — `StateGraph` with nodes and edges |
+| **Supervisor Routing** | `ai/agents/supervisor.py` | `classify_intent()` — LLM decides which specialist handles the request |
+| **LLM Call** | `ai/agents/supervisor.py` | `bind_tools()` — connects OpenAI function calling to Python functions |
+
+---
+
 ## 📁 Project Structure
 
 ```
